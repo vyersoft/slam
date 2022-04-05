@@ -1,0 +1,60 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://pop_up.gd" type="Script" id=1]
+[ext_resource path="res://Assets/Images/Street Fights v3.png" type="Texture" id=2]
+[ext_resource path="res://Assets/Fonts/BitPap.ttf" type="DynamicFontData" id=3]
+
+[sub_resource type="DynamicFont" id=1]
+size = 42
+font_data = ExtResource( 3 )
+
+[node name="pop_up" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 1 )
+
+[node name="ColorRect" type="ColorRect" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color( 0.831373, 0.831373, 0.831373, 0.352941 )
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="Panel" type="Panel" parent="CenterContainer"]
+margin_left = 190.0
+margin_top = 110.0
+margin_right = 1090.0
+margin_bottom = 610.0
+rect_min_size = Vector2( 900, 500 )
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/Panel"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="TextureRect" type="TextureRect" parent="CenterContainer/Panel/VBoxContainer"]
+margin_right = 900.0
+margin_bottom = 312.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = ExtResource( 2 )
+expand = true
+stretch_mode = 6
+
+[node name="Label" type="Label" parent="CenterContainer/Panel/VBoxContainer"]
+margin_top = 316.0
+margin_right = 900.0
+margin_bottom = 436.0
+rect_min_size = Vector2( 0, 120 )
+custom_fonts/font = SubResource( 1 )
+text = "Play the alpha build."
+align = 1
+valign = 1
+
+[node name="Button" type="Button" parent="CenterContainer/Panel/VBoxContainer"]
+margin_top = 440.0
+margin_right = 900.0
+margin_bottom = 500.0
+rect_min_size = Vector2( 0, 60 )
+text = "Start the fight"
