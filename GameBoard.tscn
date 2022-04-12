@@ -1,0 +1,687 @@
+[gd_scene load_steps=31 format=2]
+
+[ext_resource path="res://Assets/Fonts/Retro Gaming.ttf" type="DynamicFontData" id=1]
+[ext_resource path="res://Assets/Images/Arrow.png" type="Texture" id=2]
+[ext_resource path="res://Assets/Images/SpeechBox.png" type="Texture" id=3]
+[ext_resource path="res://Assets/Images/announcer.png" type="Texture" id=4]
+[ext_resource path="res://Assets/Images/announcer2.png" type="Texture" id=5]
+[ext_resource path="res://Assets/Images/ssf_bg.png" type="Texture" id=6]
+[ext_resource path="res://GameBoard.gd" type="Script" id=7]
+[ext_resource path="res://PanelButton.gd" type="Script" id=8]
+[ext_resource path="res://Assets/Slammers/1611.png" type="Texture" id=9]
+[ext_resource path="res://Assets/Images/StatIcons/Resilience.png" type="Texture" id=10]
+[ext_resource path="res://Assets/Images/StatIcons/Speed.png" type="Texture" id=11]
+[ext_resource path="res://Assets/Images/StatIcons/Strength.png" type="Texture" id=12]
+[ext_resource path="res://Assets/Images/StatIcons/X-factor.png" type="Texture" id=13]
+[ext_resource path="res://Assets/Images/StatIcons/Charisma.png" type="Texture" id=14]
+[ext_resource path="res://Assets/Images/Finisher Button.png" type="Texture" id=15]
+[ext_resource path="res://Assets/Images/FinisherButtonPressed.png" type="Texture" id=16]
+[ext_resource path="res://Assets/Images/FinisherButtonHighlight.png" type="Texture" id=17]
+[ext_resource path="res://Assets/Images/timerbox.png" type="Texture" id=18]
+[ext_resource path="res://FinisherButton.gd" type="Script" id=19]
+
+[sub_resource type="DynamicFont" id=10]
+size = 18
+font_data = ExtResource( 1 )
+
+[sub_resource type="DynamicFont" id=11]
+size = 18
+font_data = ExtResource( 1 )
+
+[sub_resource type="StyleBoxFlat" id=3]
+bg_color = Color( 0.827451, 0, 0.52549, 1 )
+corner_radius_bottom_right = 10
+
+[sub_resource type="StyleBoxFlat" id=4]
+bg_color = Color( 0.352941, 0.321569, 0.321569, 1 )
+corner_radius_bottom_right = 10
+shadow_size = 5
+
+[sub_resource type="StyleBoxFlat" id=1]
+bg_color = Color( 0.996078, 0.964706, 0.407843, 1 )
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+
+[sub_resource type="StyleBoxFlat" id=2]
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+shadow_size = 5
+
+[sub_resource type="StyleBoxFlat" id=5]
+bg_color = Color( 0.827451, 0, 0.52549, 1 )
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id=6]
+bg_color = Color( 0.352941, 0.321569, 0.321569, 1 )
+corner_radius_bottom_left = 10
+shadow_size = 5
+
+[sub_resource type="StyleBoxFlat" id=7]
+bg_color = Color( 0.996078, 0.964706, 0.407843, 1 )
+corner_radius_top_left = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id=8]
+corner_radius_top_left = 10
+corner_radius_bottom_left = 10
+shadow_size = 5
+
+[sub_resource type="StyleBoxEmpty" id=9]
+
+[node name="GameBoard" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 7 )
+
+[node name="background" type="TextureRect" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+texture = ExtResource( 6 )
+expand = true
+
+[node name="HandPanel" type="ColorRect" parent="."]
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = -172.0
+color = Color( 0.258824, 0.521569, 0.972549, 0.784314 )
+
+[node name="HandContainer" type="GridContainer" parent="HandPanel"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 10.0
+margin_top = 10.0
+margin_right = -10.0
+margin_bottom = -10.0
+columns = 7
+
+[node name="AnnouncerPanel" type="Panel" parent="."]
+anchor_top = 0.575
+anchor_right = 1.0
+anchor_bottom = 0.761
+margin_top = -3.05176e-05
+margin_bottom = 0.0799561
+
+[node name="aesthetics" type="Control" parent="AnnouncerPanel"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="Dub" type="TextureRect" parent="AnnouncerPanel/aesthetics"]
+anchor_top = 0.5
+anchor_bottom = 0.5
+margin_top = -64.0
+margin_right = 128.0
+margin_bottom = 64.0
+texture = ExtResource( 4 )
+
+[node name="Matt" type="TextureRect" parent="AnnouncerPanel/aesthetics"]
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+margin_left = -285.0
+margin_top = -64.0
+margin_right = -157.0
+margin_bottom = 64.0
+texture = ExtResource( 5 )
+
+[node name="Arrow" type="TextureRect" parent="AnnouncerPanel/aesthetics"]
+anchor_left = 0.085
+anchor_top = 0.351
+anchor_right = 0.116
+anchor_bottom = 0.649
+margin_left = -1.8
+margin_top = -0.0340004
+margin_right = -1.48001
+margin_bottom = 0.0339966
+texture = ExtResource( 2 )
+
+[node name="Arrow2" type="TextureRect" parent="AnnouncerPanel/aesthetics"]
+anchor_left = 0.76
+anchor_top = 0.351
+anchor_right = 0.787
+anchor_bottom = 0.649
+margin_left = 37.2
+margin_top = -0.0340004
+margin_right = 39.6399
+margin_bottom = 0.0339966
+rect_scale = Vector2( -1, 1 )
+texture = ExtResource( 2 )
+
+[node name="Speech1" type="TextureRect" parent="AnnouncerPanel"]
+anchor_left = 0.114
+anchor_top = 0.119
+anchor_right = 0.427
+anchor_bottom = 0.881
+margin_left = 0.0799866
+margin_top = 0.0539999
+margin_right = -0.559998
+margin_bottom = -0.0540085
+texture = ExtResource( 3 )
+
+[node name="Text" type="Label" parent="AnnouncerPanel/Speech1"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 6.0
+margin_top = 6.0
+margin_right = -6.0
+margin_bottom = -6.0
+custom_fonts/font = SubResource( 10 )
+text = "Let's begin."
+align = 1
+valign = 1
+autowrap = true
+clip_text = true
+
+[node name="Speech2" type="TextureRect" parent="AnnouncerPanel"]
+anchor_left = 0.446
+anchor_top = 0.119
+anchor_right = 0.759
+anchor_bottom = 0.881
+margin_left = 0.119995
+margin_top = 0.0539999
+margin_right = -0.520081
+margin_bottom = -0.0540085
+texture = ExtResource( 3 )
+
+[node name="Text" type="Label" parent="AnnouncerPanel/Speech2"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 6.0
+margin_top = 6.0
+margin_right = -6.0
+margin_bottom = -6.0
+custom_fonts/font = SubResource( 11 )
+text = "Are you ready?"
+align = 1
+valign = 1
+autowrap = true
+clip_text = true
+
+[node name="PanelButton" type="Button" parent="AnnouncerPanel"]
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+margin_left = -157.0
+margin_top = -30.0
+margin_right = -25.0
+margin_bottom = 30.0
+text = "Pass"
+script = ExtResource( 8 )
+
+[node name="Player" type="Control" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="PlayContainer" type="HBoxContainer" parent="Player"]
+anchor_left = 0.026
+anchor_top = 0.34
+anchor_right = 0.416
+anchor_bottom = 0.537
+margin_left = -0.279999
+margin_top = 0.199997
+margin_right = 0.52002
+margin_bottom = 0.359985
+size_flags_horizontal = 0
+size_flags_vertical = 0
+
+[node name="MomentumBar" type="ProgressBar" parent="Player"]
+margin_left = 178.0
+margin_top = 92.0
+margin_right = 534.0
+margin_bottom = 122.0
+custom_styles/fg = SubResource( 3 )
+custom_styles/bg = SubResource( 4 )
+
+[node name="DurabilityBar" type="ProgressBar" parent="Player"]
+margin_left = 178.0
+margin_top = 71.0
+margin_right = 568.0
+margin_bottom = 93.0
+custom_styles/fg = SubResource( 1 )
+custom_styles/bg = SubResource( 2 )
+
+[node name="Slammer" type="TextureRect" parent="Player"]
+anchor_left = 0.016
+anchor_top = 0.028
+anchor_right = 0.141
+anchor_bottom = 0.25
+margin_left = -0.480001
+margin_top = -0.16
+margin_right = -0.480011
+texture = ExtResource( 9 )
+expand = true
+flip_h = true
+
+[node name="Stats" type="HBoxContainer" parent="Player"]
+anchor_left = 0.144
+anchor_top = 0.171
+anchor_right = 0.336
+anchor_bottom = 0.249
+margin_left = -0.320007
+margin_top = 4.88
+margin_right = -38.08
+margin_bottom = 4.71999
+
+[node name="Resilience" type="VBoxContainer" parent="Player/Stats"]
+margin_right = 38.0
+margin_bottom = 56.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="TextureRect" type="TextureRect" parent="Player/Stats/Resilience"]
+margin_right = 38.0
+margin_bottom = 38.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = ExtResource( 10 )
+expand = true
+stretch_mode = 1
+
+[node name="Label" type="Label" parent="Player/Stats/Resilience"]
+margin_top = 42.0
+margin_right = 38.0
+margin_bottom = 56.0
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "1"
+align = 1
+valign = 1
+
+[node name="Strength" type="VBoxContainer" parent="Player/Stats"]
+margin_left = 42.0
+margin_right = 80.0
+margin_bottom = 56.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="TextureRect" type="TextureRect" parent="Player/Stats/Strength"]
+margin_right = 38.0
+margin_bottom = 38.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = ExtResource( 12 )
+expand = true
+stretch_mode = 1
+
+[node name="Label" type="Label" parent="Player/Stats/Strength"]
+margin_top = 42.0
+margin_right = 38.0
+margin_bottom = 56.0
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "1"
+align = 1
+valign = 1
+
+[node name="Speed" type="VBoxContainer" parent="Player/Stats"]
+margin_left = 84.0
+margin_right = 123.0
+margin_bottom = 56.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="TextureRect" type="TextureRect" parent="Player/Stats/Speed"]
+margin_right = 39.0
+margin_bottom = 38.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = ExtResource( 11 )
+expand = true
+stretch_mode = 1
+
+[node name="Label" type="Label" parent="Player/Stats/Speed"]
+margin_top = 42.0
+margin_right = 39.0
+margin_bottom = 56.0
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "1"
+align = 1
+valign = 1
+
+[node name="X-Factor" type="VBoxContainer" parent="Player/Stats"]
+margin_left = 127.0
+margin_right = 165.0
+margin_bottom = 56.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="TextureRect" type="TextureRect" parent="Player/Stats/X-Factor"]
+margin_right = 38.0
+margin_bottom = 38.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = ExtResource( 13 )
+expand = true
+stretch_mode = 1
+
+[node name="Label" type="Label" parent="Player/Stats/X-Factor"]
+margin_top = 42.0
+margin_right = 38.0
+margin_bottom = 56.0
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "1"
+align = 1
+valign = 1
+
+[node name="Charisma" type="VBoxContainer" parent="Player/Stats"]
+margin_left = 169.0
+margin_right = 208.0
+margin_bottom = 56.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="TextureRect" type="TextureRect" parent="Player/Stats/Charisma"]
+margin_right = 39.0
+margin_bottom = 38.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = ExtResource( 14 )
+expand = true
+stretch_mode = 1
+
+[node name="Label" type="Label" parent="Player/Stats/Charisma"]
+margin_top = 42.0
+margin_right = 39.0
+margin_bottom = 56.0
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "1"
+align = 1
+valign = 1
+
+[node name="Username" type="Label" parent="Player"]
+margin_left = 190.0
+margin_top = 36.0
+margin_right = 438.0
+margin_bottom = 68.0
+text = "[Username]"
+valign = 1
+
+[node name="Alignment" type="Label" parent="Player"]
+margin_left = 190.0
+margin_top = 20.0
+margin_right = 438.0
+margin_bottom = 40.0
+text = "Powerhouz"
+valign = 1
+
+[node name="Opponent" type="Control" parent="."]
+anchor_left = 0.043
+anchor_top = 0.084
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -55.04
+margin_top = -60.48
+mouse_filter = 2
+
+[node name="PlayContainer" type="HBoxContainer" parent="Opponent"]
+anchor_left = 0.583
+anchor_top = 0.34
+anchor_right = 0.973
+anchor_bottom = 0.537
+margin_left = -0.23999
+margin_top = 0.199997
+margin_right = 0.559937
+margin_bottom = 0.359985
+size_flags_horizontal = 0
+size_flags_vertical = 0
+alignment = 2
+
+[node name="MomentumBar" type="ProgressBar" parent="Opponent"]
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+margin_left = -539.0
+margin_top = -268.0
+margin_right = -183.0
+margin_bottom = -238.0
+custom_styles/fg = SubResource( 5 )
+custom_styles/bg = SubResource( 6 )
+
+[node name="DurabilityBar" type="ProgressBar" parent="Opponent"]
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+margin_left = -573.0
+margin_top = -289.0
+margin_right = -183.0
+margin_bottom = -267.0
+custom_styles/fg = SubResource( 7 )
+custom_styles/bg = SubResource( 8 )
+
+[node name="Slammer" type="TextureRect" parent="Opponent"]
+anchor_left = 0.016
+anchor_top = 0.028
+anchor_right = 0.141
+anchor_bottom = 0.25
+margin_left = 1074.52
+margin_top = -0.16
+margin_right = 1074.52
+texture = ExtResource( 9 )
+expand = true
+
+[node name="Stats" type="HBoxContainer" parent="Opponent"]
+anchor_left = 0.144
+anchor_top = 0.171
+anchor_right = 0.336
+anchor_bottom = 0.249
+margin_left = 697.68
+margin_top = 4.88
+margin_right = 659.92
+margin_bottom = 4.71999
+
+[node name="Resilience" type="VBoxContainer" parent="Opponent/Stats"]
+margin_right = 38.0
+margin_bottom = 56.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="TextureRect" type="TextureRect" parent="Opponent/Stats/Resilience"]
+margin_right = 38.0
+margin_bottom = 38.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = ExtResource( 10 )
+expand = true
+stretch_mode = 1
+
+[node name="Label" type="Label" parent="Opponent/Stats/Resilience"]
+margin_top = 42.0
+margin_right = 38.0
+margin_bottom = 56.0
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "1"
+align = 1
+valign = 1
+
+[node name="Strength" type="VBoxContainer" parent="Opponent/Stats"]
+margin_left = 42.0
+margin_right = 80.0
+margin_bottom = 56.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="TextureRect" type="TextureRect" parent="Opponent/Stats/Strength"]
+margin_right = 38.0
+margin_bottom = 38.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = ExtResource( 12 )
+expand = true
+stretch_mode = 1
+
+[node name="Label" type="Label" parent="Opponent/Stats/Strength"]
+margin_top = 42.0
+margin_right = 38.0
+margin_bottom = 56.0
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "1"
+align = 1
+valign = 1
+
+[node name="Speed" type="VBoxContainer" parent="Opponent/Stats"]
+margin_left = 84.0
+margin_right = 123.0
+margin_bottom = 56.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="TextureRect" type="TextureRect" parent="Opponent/Stats/Speed"]
+margin_right = 39.0
+margin_bottom = 38.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = ExtResource( 11 )
+expand = true
+stretch_mode = 1
+
+[node name="Label" type="Label" parent="Opponent/Stats/Speed"]
+margin_top = 42.0
+margin_right = 39.0
+margin_bottom = 56.0
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "1"
+align = 1
+valign = 1
+
+[node name="X-Factor" type="VBoxContainer" parent="Opponent/Stats"]
+margin_left = 127.0
+margin_right = 165.0
+margin_bottom = 56.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="TextureRect" type="TextureRect" parent="Opponent/Stats/X-Factor"]
+margin_right = 38.0
+margin_bottom = 38.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = ExtResource( 13 )
+expand = true
+stretch_mode = 1
+
+[node name="Label" type="Label" parent="Opponent/Stats/X-Factor"]
+margin_top = 42.0
+margin_right = 38.0
+margin_bottom = 56.0
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "1"
+align = 1
+valign = 1
+
+[node name="Charisma" type="VBoxContainer" parent="Opponent/Stats"]
+margin_left = 169.0
+margin_right = 208.0
+margin_bottom = 56.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="TextureRect" type="TextureRect" parent="Opponent/Stats/Charisma"]
+margin_right = 39.0
+margin_bottom = 38.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = ExtResource( 14 )
+expand = true
+stretch_mode = 1
+
+[node name="Label" type="Label" parent="Opponent/Stats/Charisma"]
+margin_top = 42.0
+margin_right = 39.0
+margin_bottom = 56.0
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "1"
+align = 1
+valign = 1
+
+[node name="Username" type="Label" parent="Opponent"]
+margin_left = 837.0
+margin_top = 36.0
+margin_right = 1085.0
+margin_bottom = 68.0
+text = "[Username]"
+align = 2
+valign = 1
+
+[node name="Alignment" type="Label" parent="Opponent"]
+margin_left = 837.0
+margin_top = 20.0
+margin_right = 1085.0
+margin_bottom = 40.0
+text = "Powerhouz"
+align = 2
+valign = 1
+
+[node name="Die" type="ColorRect" parent="."]
+anchor_left = 0.466
+anchor_top = 0.028
+anchor_right = 0.534
+anchor_bottom = 0.15
+margin_left = -0.47998
+margin_top = 130.84
+margin_right = 0.47998
+margin_bottom = 131.0
+color = Color( 0.513726, 0, 0.639216, 1 )
+
+[node name="DieRoll" type="Label" parent="Die"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+text = "##"
+align = 1
+valign = 1
+
+[node name="FinisherButton" type="TextureButton" parent="."]
+visible = false
+margin_left = 571.0
+margin_top = 430.0
+margin_right = 971.0
+margin_bottom = 532.0
+disabled = true
+texture_normal = ExtResource( 15 )
+texture_pressed = ExtResource( 16 )
+texture_hover = ExtResource( 17 )
+script = ExtResource( 19 )
+
+[node name="Timer" type="Panel" parent="."]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -66.0
+margin_top = -97.0
+margin_right = 66.0
+margin_bottom = 7.0
+custom_styles/panel = SubResource( 9 )
+
+[node name="Box" type="TextureRect" parent="Timer"]
+anchor_top = 0.183
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = -0.0320015
+texture = ExtResource( 18 )
+
+[node name="Text" type="Label" parent="Timer/Box"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+text = "15"
+align = 1
+valign = 1
+
+[node name="Label" type="Label" parent="Timer"]
+margin_right = 132.0
+margin_bottom = 19.0
+text = "TIME"
+align = 1
+valign = 1

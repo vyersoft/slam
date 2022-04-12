@@ -1,11 +1,12 @@
 extends Node
 
-onready var game_board = get_node('/root/game_board/')
+#onready var game_board = get_node('/root/game_board/')
+onready var game_board = get_node('/root/GameBoard/')
 
 # Declare member variables here. Examples:
 onready var player_deck = preload("res://Assets/TempDatabase/game_deck.gd")
 onready var my_slammers = preload("res://Assets/TempDatabase/my_slammers.gd")
-#var deck_size = player_deck.deck_list.size()
+#var deck_size = player_deck.Powerhouz.size()
 var player_stance
 var player_power 
 var player_hand = []
@@ -16,6 +17,8 @@ var base_durability
 var momentum_max
 var turn_order = 2 #starts 2nd by default
 var success = 0
+
+var active_finisher = false
 
 #slammer stats
 const slammer_data = preload("res://Assets/TempDatabase/slammer_data.gd")
@@ -28,9 +31,9 @@ var charisma
 var alignment
 
 #for updating labels
-onready var die_label = game_board.get_node('die_roll/Panel/VBoxContainer/die_roll')
-onready var power_label = game_board.get_node('opponent/power_display/VBoxContainer/power')
-onready var stance_label = game_board.get_node('opponent/power_display/VBoxContainer/stance')
+#onready var die_label = game_board.get_node('die_roll/Panel/VBoxContainer/die_roll')
+#onready var power_label = game_board.get_node('Opponent/power_display/VBoxContainer/power')
+#onready var stance_label = game_board.get_node('Opponent/power_display/VBoxContainer/stance')
 
 #AI specific
 var cap_database = preload('res://Assets/TempDatabase/move_cap_data.gd')
@@ -43,7 +46,7 @@ func _ready():
 #	var select_slammer = randi() % my_slammers.slammer.size()
 	var select_slammer = my_slammers.slammer[randi() % my_slammers.slammer.size()]
 	slammer = slammer_data.slammer[select_slammer]
-	game_board.get_node("hud/Panel/opponent/img").texture = load("res://Assets/Slammers/" + str(select_slammer) + ".png")
+	game_board.get_node("Opponent/Slammer").texture = load("res://Assets/Slammers/" + str(select_slammer) + ".png")
 	print("AI Stats:", slammer)
 	setup()
 	
@@ -67,8 +70,8 @@ func setup():
 		base_durability = 52
 	else:
 		base_durability = 50
-	game_board.get_node('opponent/durability').max_value = base_durability
-	game_board.get_node('opponent/durability').value = base_durability
+	game_board.get_node('Opponent/DurabilityBar').max_value = base_durability
+	game_board.get_node('Opponent/DurabilityBar').value = base_durability
 	
 	#set momentum_max
 	if charisma == 5:
@@ -81,24 +84,24 @@ func setup():
 		momentum_max = 6
 	else:
 		momentum_max = 7
-	game_board.get_node('opponent/momentum_bar').max_value = momentum_max
-	fill_hud("opponent")
+	game_board.get_node('Opponent/MomentumBar').max_value = momentum_max
+	game_manager.fill_hud("Opponent")
 
 func draw_cap():
 #	print("AI Draws...")
-	if player_deck.deck_list.size() == 0:
+	if player_deck.Powerhouz.size() == 0:
 		
 		print("shuffling...")
 		for n in player_discard.size():
-			player_deck.deck_list.append(player_discard.pop_back())
-		print("Player Deck: ", str(player_deck.deck_list.size()))
+			player_deck.Powerhouz.append(player_discard.pop_back())
+		print("Player Deck: ", str(player_deck.Powerhouz.size()))
 			
-	var selected_cap = randi() % player_deck.deck_list.size()
-	var new_cap = Cap.new(player_deck.deck_list[selected_cap])
+	var selected_cap = randi() % player_deck.Powerhouz.size()
+	var new_cap = Cap.new(player_deck.Powerhouz[selected_cap])
 	player_hand.append(new_cap.cap)
 	new_cap.disabled = true
-#	game_board.get_node('opponent/grid_hand').add_child(new_cap)
-	player_deck.deck_list.erase(player_deck.deck_list[selected_cap])
+#	game_board.get_node('Opponent/grid_hand').add_child(new_cap)
+	player_deck.Powerhouz.erase(player_deck.Powerhouz[selected_cap])
 
 func discard_hand():
 	var hand_size = player_hand.size()
@@ -109,18 +112,18 @@ func discard_hand():
 
 func play_cap(img):
 	var played = PlayedCap.new(img)
-	power_label.text = str(player_power)
-	game_board.get_node('opponent/grid_played').add_child(played)
+#	power_label.text = str(player_power)
+	game_board.get_node('Opponent/PlayContainer').add_child(played)
 
 func update_momentum():
-	game_board.get_node('opponent/momentum_bar').value += 1
+	game_board.get_node('Opponent/MomentumBar').value += 1
 	
 func update_durability(damage):
-	game_board.get_node('opponent/durability').value -= damage
+	game_board.get_node('Opponent/DurabilityBar').value -= damage
 
 func check_finisher():
-	if game_board.get_node('opponent/momentum_bar').value == momentum_max:
-		game_board.get_node('opponent/finisher_button').disabled = false
+	if game_board.get_node('Opponent/MomentumBar').value == momentum_max:
+#		game_board.get_node('Opponent/finisher_button').disabled = false
 		return true
 	else:
 		return false
@@ -133,39 +136,34 @@ func new_round():
 	
 	player_power = 0
 	player_move = 3
-	stance_label.text = player_stance
-	power_label.text = str(player_power)
-	for child in game_board.get_node('grid_opponent_played').get_children():
+#	stance_label.text = player_stance
+#	power_label.text = str(player_power)
+	for child in game_board.get_node('grid_Opponent_played').get_children():
 		child.queue_free()
 	
 	for n in x_factor + 2: #affected by x_factor
 		draw_cap()
 	print("Hand:"+str(player_hand))
 
-func roll_die():
-	for n in 3:
-		die_roll = randi() % 6 + 1
-#		die_label = game_board.get_node('die_roll/Panel/VBoxContainer/die_roll')
-		die_label.text = str(die_roll)
-	return die_roll
-
 func start_turn(stance, turn_num):
 	check_finisher()
 	turn_order = turn_num
 	player_stance = stance
-	stance_label.text = str(stance)
+#	stance_label.text = str(stance)
 	player_power = 0
 	success = 0
 	
-	if game_board.get_node('opponent/finisher_button').disabled == false:
+	if game_board.get_node('Opponent/MomentumBar').value == momentum_max:
 		player_move = 3
 	else:
 		player_move = randi() % 2 +1
+		if player_move == 1:
+			player_move = 2
 	print("-------------------------------------------------------------------")
 	print("AI turn starts...")
 	print("-------------------------------------------------------------------")
 	
-	power_label.text = str(player_power)
+#	power_label.text = str(player_power)
 
 	for n in x_factor + 2: #draw caps by x_factor
 		draw_cap()
@@ -185,17 +183,17 @@ func check_success():
 		use_finisher()
 
 func use_finisher():
-	if game_board.get_node('opponent/momentum_bar').value == momentum_max and player_stance == "Attack":
+	if game_board.get_node('Opponent/MomentumBar').value == momentum_max and player_stance == "Attack":
 		print("FINISH HIM!!!")
-		game_board.get_node('opponent/momentum_bar').value = 0
-		game_board.get_node('opponent/finisher_button').disabled = true
-		game_manager.update_power("opponent", 25)
+		game_board.get_node('Opponent/MomentumBar').value = 0
+#		game_board.get_node('Opponent/finisher_button').disabled = true
+		game_manager.update_power("Opponent", 25)
 	
 func full_counter():
 	if check_finisher() == true:
 		print("FULL COUNTER!!!")
-		game_manager.update_power("opponent", 25)
-		game_board.get_node('opponent/momentum_bar').value = 0
+		game_manager.update_power("Opponent", 25)
+		game_board.get_node('Opponent/MomentumBar').value = 0
 	else:
 		print("It's a hit!")
 
@@ -217,20 +215,5 @@ func auto_play():
 		discard_hand()
 
 func discad_cap():
-	var child = game_board.get_node('opponent/grid_hand').get_child(0)
+	var child = game_board.get_node('Opponent/grid_hand').get_child(0)
 	child.queue_free()
-
-func fill_hud(user):
-	var hud_res = game_board.get_node('hud/Panel/' + user + '/stat_box/resilience/value')
-	var hud_str = game_board.get_node('hud/Panel/' + user + '/stat_box/strength/value')
-	var hud_spe = game_board.get_node('hud/Panel/' + user + '/stat_box/speed/value')
-	var hud_x = game_board.get_node('hud/Panel/' + user + '/stat_box/x_factor/value')
-	var hud_cha = game_board.get_node('hud/Panel/' + user + '/stat_box/charisma/value')
-	var hud_ali = game_board.get_node('hud/Panel/' + user + '/stat_box/alignment/value')
-	
-	hud_res.text = str(resilience)
-	hud_str.text = str(strength)
-	hud_spe.text = str(speed)
-	hud_x.text = str(x_factor)
-	hud_cha.text = str(charisma)
-	hud_ali.text = alignment

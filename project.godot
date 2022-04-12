@@ -27,7 +27,8 @@ _global_script_class_icons={
 [application]
 
 config/name="Slam Street Fights"
-run/main_scene="res://game_board.tscn"
+run/main_scene="res://GameBoard.tscn"
+boot_splash/image="res://Assets/Images/Slamcahin Logo-export.png"
 config/icon="res://icon.png"
 
 [autoload]

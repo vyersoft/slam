@@ -1,20 +1,20 @@
 extends Node
 
-onready var game_board = get_node('/root/game_board/')
+#onready var game_board = get_node('/root/game_board/')
+onready var game_board = get_node('/root/GameBoard/')
 
 # Declare member variables here. Examples:
 onready var player_deck = preload("res://Assets/TempDatabase/game_deck.gd")
-#var deck_size = player_deck.deck_list.size()
 var player_stance
 var player_power 
-var player_hand = []
-var player_discard =[]
-var player_move = 3
+var Player_hand = []
+var Player_discard =[]
+var Player_move = 3
 var die_roll
 var base_durability
 var durability
 var momentum_max
-var turn_order = 2 #starts as 2nd player by default
+var turn_order = 2 #starts as 2nd Player by default
 var move = 0 #for resolving played caps
 var success = 0
 
@@ -26,12 +26,16 @@ var strength #adds atk
 var speed #adds def
 var x_factor #defines hand size
 var charisma #defines momentum
-var alignment
+var alignment #defines alignment
 
-#for updating labels
-onready var die_label = game_board.get_node('die_roll/Panel/VBoxContainer/die_roll')
-onready var power_label = game_board.get_node('player/power_display/VBoxContainer/power')
-onready var stance_label = game_board.get_node('player/power_display/VBoxContainer/stance')
+#for updating labels and buttons
+onready var die_label = game_board.get_node('Die/DieRoll')
+onready var finisher_button = game_board.get_node('FinisherButton')
+#onready var durability_bar
+#onready var momentum_bar
+
+#for Announcers
+var commentary= preload("res://Assets/TempDatabase/comments.gd")
 
 var pop_up = preload('res://pop_up.tscn')
 
@@ -41,12 +45,12 @@ func _ready():
 #	var select_slammer = randi() % 10
 	var select_slammer = "1611" #fixed character for the alpha.
 	slammer = slammer_data.slammer[select_slammer]
-	game_board.get_node("hud/Panel/player/img").texture = load("res://Assets/Slammers/" + str(select_slammer) + ".png")
+	game_board.get_node("Player/Slammer").texture = load("res://Assets/Slammers/" + str(select_slammer) + ".png")
 	print("Slammer Stats:", str(slammer))
 	var splash = pop_up.instance()
 	game_board.add_child(splash)
 	setup()
-	
+
 func setup():
 	resilience = slammer[0]
 	strength = slammer[1]
@@ -66,8 +70,8 @@ func setup():
 		base_durability = 52
 	else:
 		base_durability = 50
-	game_board.get_node('player/durability').max_value = base_durability
-	game_board.get_node('player/durability').value = base_durability
+	game_board.get_node('Player/DurabilityBar').max_value = base_durability
+	game_board.get_node('Player/DurabilityBar').value = base_durability
 	
 	#set momentum_max
 	if charisma == 5:
@@ -80,81 +84,87 @@ func setup():
 		momentum_max = 6
 	else:
 		momentum_max = 7
-	game_board.get_node('player/momentum_bar').max_value = momentum_max
+	game_board.get_node('Player/MomentumBar').max_value = momentum_max
 	
-	fill_hud("player")
+	fill_hud("Player")
 
 func draw_cap():
-#	print("Player Deck:", player_deck.deck_list)
+#	print("Player Deck:", player_deck.Powerhouz)
 	print("-------------------------------------------------------------------")
 	print("Player Draws...")
-	if player_deck.deck_list.size() == 0:
-		print("Discard: ", player_discard)
+	if player_deck.Powerhouz.size() == 0:
+		print("Discard: ", Player_discard)
 		print("shuffling...")
-		for n in player_discard.size():
-			player_deck.deck_list.append(player_discard.pop_back())
-			print(player_deck.deck_list.size())
+		for n in Player_discard.size():
+			player_deck.Powerhouz.append(Player_discard.pop_back())
+			print(player_deck.Powerhouz.size())
 			
-	var selected_cap = randi() % player_deck.deck_list.size()
-	var new_cap = Cap.new(player_deck.deck_list[selected_cap])
-	player_hand.append(new_cap.cap)
-	game_board.get_node('player/grid_hand').add_child(new_cap)
-	player_deck.deck_list.erase(player_deck.deck_list[selected_cap])
+	var selected_cap = randi() % player_deck.Powerhouz.size()
+	var new_cap = Cap.new(player_deck.Powerhouz[selected_cap])
+	Player_hand.append(new_cap.cap)
+	game_board.get_node('HandPanel/HandContainer').add_child(new_cap)
+	player_deck.Powerhouz.erase(player_deck.Powerhouz[selected_cap])
 
 func end_turn():
-	game_board.get_node('end_button').disabled = true
-	for child in game_board.get_node('player/grid_hand').get_children():
+	game_board.get_node('AnnouncerPanel/PanelButton').text = "Roll"
+	for child in game_board.get_node('HandPanel/HandContainer').get_children():
 		child.disabled = true
 		
 	print("-------------------------------------------------------------------")
-	print("Hand: ", str(player_hand))
-	print("Deck: ", str(player_deck.deck_list))
-	print("Discard: ",str(player_discard))
+	print("Hand: ", str(Player_hand))
+	print("Deck: ", str(player_deck.Powerhouz))
+	print("Discard: ",str(Player_discard))
 	print("-------------------------------------------------------------------")
 	game_board.turn_tracker(player_power, turn_order)
-	game_board.get_node('roll_die').disabled = false
+#	game_board.get_node('roll_die').disabled = false
 
 func play_cap(img):
 	var played = PlayedCap.new(img)
-	power_label.text = str(player_power)
-	game_board.get_node('player/grid_played').add_child(played)
+#	power_label.text = str(player_power)
+	game_board.get_node('Player/PlayContainer').add_child(played)
 
 func commit_cap(cap_name):
-	player_discard.append(cap_name)
-	player_hand.erase(cap_name)
-	player_move -= 1
+	Player_discard.append(cap_name)
+	Player_hand.erase(cap_name)
+	Player_move -= 1
 	print("-------------------------------------------------------------------")
-	print("Discard:", player_discard)
-	print("Hand:", player_hand)
+	print("Discard:", Player_discard)
+	print("Hand:", Player_hand)
 	print("-------------------------------------------------------------------")
-	if player_move == 0:
+	if Player_move == 0:
 		end_turn()
 
 func update_momentum(user):
-	game_board.get_node(str(user)+'/momentum_bar').value += 1
+	game_board.get_node(str(user)+'/MomentumBar').value += 1
 
 func check_finisher():
-	if game_board.get_node('player/momentum_bar').value == momentum_max:
-		if player_stance == "Attack" or game_board.get_node('opponent/momentum_bar').value == momentum_max:
-			game_board.get_node('player/finisher_button').disabled = false
+	if game_board.get_node('Player/MomentumBar').value == momentum_max:
+		if player_stance == "Attack" and success == 3:
+			finisher_button.disabled = false
+			finisher_button.visible = true
 		else:
-			game_board.get_node('player/finisher_button').disabled = true
+			finisher_button.disabled = true
+			finisher_button.visible = false
 	else:
-		game_board.get_node('player/finisher_button').disabled = true
+		finisher_button.disabled = true
+		finisher_button.visible = false
 
 func update_durability(user, damage):
-	game_board.get_node(str(user) + '/durability').value -= abs(damage)
+	game_board.get_node(str(user) + '/DurabilityBar').value -= abs(damage)
 	print(user)
-	print(game_board.get_node(str(user) + '/durability').value)
+	print(game_board.get_node(str(user) + '/DurabilityBar').value)
 
 func update_power(user, power):
-	if user == 'player':
+	if user == 'Player':
 		player_power += power
-		game_board.get_node(str(user) + '/power_display/VBoxContainer/power').text = str(player_power)
+		success+=1
+		print("Player Success:", success)
+		check_finisher()
+#		game_board.get_node(str(user) + '/power_display/VBoxContainer/power').text = str(player_power)
 	else:
 		slam_AI.player_power += power
 		slam_AI.check_success()
-		game_board.get_node(str(user) + '/power_display/VBoxContainer/power').text = str(slam_AI.player_power)
+#		game_board.get_node(str(user) + '/power_display/VBoxContainer/power').text = str(slam_AI.player_power)
 
 func calculate_power(result, cap_info, stance, user_strength, user_speed):
 	if result >= cap_info[1]:
@@ -166,18 +176,32 @@ func calculate_power(result, cap_info, stance, user_strength, user_speed):
 		return 0
 
 func check_played_cap(user, die, stance, user_strenght, user_speed):
-	if game_board.get_node(str(user) + '/grid_played').get_child_count() > move:
-		var player_cap = game_board.get_node(str(user) + '/grid_played').get_child(move)
-		player_cap.disabled = false
-		var power = calculate_power(die, player_cap.cap_info, stance, user_strenght, user_speed)
+	if game_board.get_node(str(user) + '/PlayContainer').get_child_count() > move:
+		var Player_cap = game_board.get_node(str(user) + '/PlayContainer').get_child(move)
+		Player_cap.disabled = false
+		var power = calculate_power(die, Player_cap.cap_info, stance, user_strenght, user_speed)
 		if power == 0:
-			player_cap.pressed = true
-			for child in game_board.get_node(str(user) + '/grid_played').get_children():
+			Player_cap.pressed = true
+#			game_board.get_node('AnnouncerPanel/Speech1/Text').text = str(commentary.Miss[Player_cap.cap])
+			for child in game_board.get_node(str(user) + '/PlayContainer').get_children():
 				if child.disabled == true:
 					child.queue_free()
 		else:
 			update_momentum(user)
 			update_power(user, power)
+			set_dialogue(user, "Hit", Player_cap.cap)
+
+func set_dialogue(user, state, cap_name):
+	if user == "Player":
+		if state == "Hit":
+			var dialogue = commentary.Hit[cap_name]
+			game_board.get_node('AnnouncerPanel/Speech1/Text').text = dialogue[0]
+			game_board.get_node('AnnouncerPanel/Speech2/Text').text = dialogue[1]
+		else:
+			var dialogue = commentary.Miss[cap_name]
+			game_board.get_node('AnnouncerPanel/Speech1/Text').text = dialogue[0]
+			game_board.get_node('AnnouncerPanel/Speech2/Text').text = dialogue[1]
+
 
 func calculate_damage():
 	var damage
@@ -185,30 +209,36 @@ func calculate_damage():
 	if player_stance == "Attack":
 		damage = player_power - slam_AI.player_power
 		if damage > 0:
-			update_durability("opponent", damage)
+			update_durability("Opponent", damage)
 		else:
-			update_durability("player", damage)
+			update_durability("Player", damage)
 	else:
 		damage = slam_AI.player_power - player_power
 		if damage > 0:
-			update_durability("player", damage)
+			update_durability("Player", damage)
 		else:
-			update_durability("opponent", damage)
+			update_durability("Opponent", damage)
 		print("Damage: " + str(damage))
 
 func resolve_round():
+	print("Move:", move)
 	if move <= 2:
 		var die = roll_die()
-		check_played_cap("player", die, player_stance, strength, speed)
-		check_played_cap("opponent", die, slam_AI.player_stance, slam_AI.strength, slam_AI.speed)
+		check_played_cap("Player", die, player_stance, strength, speed)
+		check_played_cap("Opponent", die, slam_AI.player_stance, slam_AI.strength, slam_AI.speed)
 		check_finisher()
 		move += 1
 		if move == 3:
-			game_board.get_node('roll_die').text = "Next Round"
-			calculate_damage()
-			print("Player HP:", game_board.get_node('player/durability').value)
-			print("AI HP:", game_board.get_node('opponent/durability').value)
-
+			game_board.get_node('AnnouncerPanel/PanelButton').text = "Deal Damage"
+			move += 1
+	elif move == 4:
+		game_board.get_node('AnnouncerPanel/PanelButton').text = "Next Round"
+		calculate_damage()
+		print("Player Power:", player_power)
+		print("AI Power:", slam_AI.player_power)
+		print("Player HP:", game_board.get_node('Player/DurabilityBar').value)
+		print("AI HP:", game_board.get_node('Opponent/DurabilityBar').value)
+		move += 1
 	else:
 		print("New Round...")
 		move = 0
@@ -227,26 +257,37 @@ func start_turn(stance, turn_num):
 	print("-------------------------------------------------------------------")
 	check_finisher()
 	turn_order = turn_num
+	success = 0
 	player_power = 0
-	player_move = 3
+	Player_move = 3
 	player_stance = stance
-	stance_label.text = stance
-#	stance_label.text = player_stance
-	power_label.text = str(player_power)
-	game_board.get_node('end_button').disabled = false
+	if player_stance == "Attack":
+		game_board.get_node('HandPanel').color = Color(1, 0, 0, 1)
+	else:
+		game_board.get_node('HandPanel').color = Color(0, 0, 1, 1)
+#	stance_label.text = stance
+#	stance_label.text = Player_stance
+#	power_label.text = str(player_power)
+	game_board.get_node('AnnouncerPanel/PanelButton').text = "Pass"
 
-	for n in x_factor + 2 - player_hand.size(): #draw caps by x_factor
+	for n in x_factor + 2 - Player_hand.size(): #draw caps by x_factor
 		draw_cap()
-	print("Hand:"+str(player_hand))
+	print("Hand:"+str(Player_hand))
 	print("-------------------------------------------------------------------")
 
 func fill_hud(user):
-	var hud_res = game_board.get_node('hud/Panel/' + user + '/stat_box/resilience/value')
-	var hud_str = game_board.get_node('hud/Panel/' + user + '/stat_box/strength/value')
-	var hud_spe = game_board.get_node('hud/Panel/' + user + '/stat_box/speed/value')
-	var hud_x = game_board.get_node('hud/Panel/' + user + '/stat_box/x_factor/value')
-	var hud_cha = game_board.get_node('hud/Panel/' + user + '/stat_box/charisma/value')
-	var hud_ali = game_board.get_node('hud/Panel/' + user + '/stat_box/alignment/value')
+#	var hud_res = game_board.get_node('hud/Panel/' + user + '/stat_box/resilience/value')
+#	var hud_str = game_board.get_node('hud/Panel/' + user + '/stat_box/strength/value')
+#	var hud_spe = game_board.get_node('hud/Panel/' + user + '/stat_box/speed/value')
+#	var hud_x = game_board.get_node('hud/Panel/' + user + '/stat_box/x_factor/value')
+#	var hud_cha = game_board.get_node('hud/Panel/' + user + '/stat_box/charisma/value')
+#	var hud_ali = game_board.get_node('hud/Panel/' + user + '/stat_box/alignment/value')
+	var hud_res = game_board.get_node(user + '/Stats/Resilience/Label')
+	var hud_str = game_board.get_node(user + '/Stats/Strength/Label')
+	var hud_spe = game_board.get_node(user + '/Stats/Speed/Label')
+	var hud_x = game_board.get_node(user + '/Stats/X-Factor/Label')
+	var hud_cha = game_board.get_node(user + '/Stats/Charisma/Label')
+	var hud_ali = game_board.get_node(user + '/Alignment')
 	
 	hud_res.text = str(resilience)
 	hud_str.text = str(strength)
@@ -254,7 +295,4 @@ func fill_hud(user):
 	hud_x.text = str(x_factor)
 	hud_cha.text = str(charisma)
 	hud_ali.text = alignment
-	
-	
-	
-	
+
