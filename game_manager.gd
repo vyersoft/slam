@@ -357,10 +357,18 @@ func fill_hud(user):
 	var hud_cha = game_board.get_node(user + '/Stats/Charisma/Label')
 	var hud_ali = game_board.get_node(user + '/Alignment')
 	
-	hud_res.text = str(resilience)
-	hud_str.text = str(strength)
-	hud_spe.text = str(speed)
-	hud_x.text = str(x_factor)
-	hud_cha.text = str(charisma)
-	hud_ali.text = alignment
+	if user == "Player":
+		hud_res.text = str(resilience)
+		hud_str.text = str(strength)
+		hud_spe.text = str(speed)
+		hud_x.text = str(x_factor)
+		hud_cha.text = str(charisma)
+		hud_ali.text = alignment
+	else:
+		hud_res.text = str(slam_AI.resilience)
+		hud_str.text = str(slam_AI.strength)
+		hud_spe.text = str(slam_AI.speed)
+		hud_x.text = str(slam_AI.x_factor)
+		hud_cha.text = str(slam_AI.charisma)
+		hud_ali.text = slam_AI.alignment
 

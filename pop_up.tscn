@@ -59,15 +59,8 @@ margin_bottom = 500.0
 size_flags_horizontal = 3
 
 [node name="StartButton" type="Button" parent="CenterContainer/Panel/VBoxContainer/HBoxContainer"]
-margin_right = 448.0
+margin_right = 900.0
 margin_bottom = 60.0
 rect_min_size = Vector2( 0, 60 )
 size_flags_horizontal = 3
 text = "Start"
-
-[node name="RedeemButton" type="Button" parent="CenterContainer/Panel/VBoxContainer/HBoxContainer"]
-margin_left = 452.0
-margin_right = 900.0
-margin_bottom = 60.0
-size_flags_horizontal = 3
-text = "Redeem"
