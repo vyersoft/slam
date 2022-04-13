@@ -2,10 +2,10 @@
 
 [ext_resource path="res://pop_up.gd" type="Script" id=1]
 [ext_resource path="res://Assets/Images/Street Fights v3.png" type="Texture" id=2]
-[ext_resource path="res://Assets/Fonts/BitPap.ttf" type="DynamicFontData" id=3]
+[ext_resource path="res://Assets/Fonts/Retro Gaming.ttf" type="DynamicFontData" id=3]
 
 [sub_resource type="DynamicFont" id=1]
-size = 42
+size = 39
 font_data = ExtResource( 3 )
 
 [node name="pop_up" type="Control"]
@@ -52,9 +52,22 @@ text = "Play the alpha build."
 align = 1
 valign = 1
 
-[node name="Button" type="Button" parent="CenterContainer/Panel/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="CenterContainer/Panel/VBoxContainer"]
 margin_top = 440.0
 margin_right = 900.0
 margin_bottom = 500.0
+size_flags_horizontal = 3
+
+[node name="StartButton" type="Button" parent="CenterContainer/Panel/VBoxContainer/HBoxContainer"]
+margin_right = 448.0
+margin_bottom = 60.0
 rect_min_size = Vector2( 0, 60 )
-text = "Start the fight"
+size_flags_horizontal = 3
+text = "Start"
+
+[node name="RedeemButton" type="Button" parent="CenterContainer/Panel/VBoxContainer/HBoxContainer"]
+margin_left = 452.0
+margin_right = 900.0
+margin_bottom = 60.0
+size_flags_horizontal = 3
+text = "Redeem"

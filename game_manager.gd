@@ -1,15 +1,13 @@
 extends Node
 
-#onready var game_board = get_node('/root/game_board/')
+#set the gameboard
 onready var game_board = get_node('/root/GameBoard/')
 
-# Declare member variables here. Examples:
-onready var player_deck = preload("res://Assets/TempDatabase/game_deck.gd")
 var player_stance
 var player_power 
-var Player_hand = []
-var Player_discard =[]
-var Player_move = 3
+var player_hand = []
+var player_discard =[]
+var player_move = 3
 var die_roll
 var base_durability
 var durability
@@ -28,13 +26,28 @@ var x_factor #defines hand size
 var charisma #defines momentum
 var alignment #defines alignment
 
+#setting the player deck
+onready var player_deck = preload("res://Assets/TempDatabase/game_deck.gd")
+
 #for updating labels and buttons
 onready var die_label = game_board.get_node('Die/DieRoll')
 onready var finisher_button = game_board.get_node('FinisherButton')
 #onready var durability_bar
 #onready var momentum_bar
 
-#for Announcers
+#GameBoard Variables
+var player_1
+var player_2
+var round_n = 0
+var p1_pow = 0
+var p2_pow = 0
+onready var hand_container = game_board.get_node("HandPanel/HandContainer")
+onready var player_played = game_board.get_node("Player/PlayContainer")
+onready var player_durability = game_board.get_node("Player/DurabilityBar")
+onready var opponent_played = game_board.get_node("Opponent/PlayContainer")
+onready var opponent_durability = game_board.get_node("Opponent/DurabilityBar")
+
+#set announce dialouges
 var commentary= preload("res://Assets/TempDatabase/comments.gd")
 
 var pop_up = preload('res://pop_up.tscn')
@@ -42,14 +55,67 @@ var pop_up = preload('res://pop_up.tscn')
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	randomize()
-#	var select_slammer = randi() % 10
+	var splash = pop_up.instance()
+	game_board.add_child(splash)
+#	set_player()
+#	setup()
+
+func reset_hand():
+	for child in game_board.get_node("HandPanel/HandContainer").get_children():
+		child.queue_free()
+
+func set_turns():
+	if randi() % 10 + 1 <= 5:
+		player_1 = game_board.get_node('/root/game_manager/')
+		player_2 = game_board.get_node('/root/slam_AI/')
+		print("Attacker:Player")
+	else:
+		player_1 = game_board.get_node('/root/slam_AI/')
+		player_2 = game_board.get_node('/root/game_manager/')
+		print("Attacker: AI")
+		
+func round_start():
+	if opponent_durability.value == 0:
+		print("Player Wins!")
+		var win_screen = pop_up.instance()
+		win_screen.get_node('CenterContainer/Panel/VBoxContainer/Label').text = "YOU WIN!!!"
+		game_board.add_child(win_screen)
+		
+	elif player_durability.value == 0:
+		print("Player Lose!")
+		var win_screen = pop_up.instance()
+		win_screen.get_node('CenterContainer/Panel/VBoxContainer/Label').text = "YOU LOSE!!!"
+		game_board.add_child(win_screen)
+	else:
+		print("-------------------------------------------------------------------")
+		print("ROUND "+ str(round_n))
+		print("-------------------------------------------------------------------")
+		round_n +=1
+		for child in player_played.get_children():
+			child.queue_free()
+		for child in opponent_played.get_children():
+			child.queue_free()
+		for child in hand_container.get_children():
+			child.disabled = false
+			
+		if round_n % 2 != 0:
+			player_1.start_turn("Attack", 1)
+			player_2.start_turn("Defence", 2)
+		else:
+			player_2.start_turn("Attack", 1)
+			player_1.start_turn("Defence", 2)
+
+func turn_tracker(power, turn_num):
+	if turn_num == 1:
+		p1_pow = power
+	else:
+		p2_pow = power
+
+func set_player():
 	var select_slammer = "1611" #fixed character for the alpha.
 	slammer = slammer_data.slammer[select_slammer]
 	game_board.get_node("Player/Slammer").texture = load("res://Assets/Slammers/" + str(select_slammer) + ".png")
 	print("Slammer Stats:", str(slammer))
-	var splash = pop_up.instance()
-	game_board.add_child(splash)
-	setup()
 
 func setup():
 	resilience = slammer[0]
@@ -93,45 +159,53 @@ func draw_cap():
 	print("-------------------------------------------------------------------")
 	print("Player Draws...")
 	if player_deck.Powerhouz.size() == 0:
-		print("Discard: ", Player_discard)
+		print("Discard: ", player_discard)
 		print("shuffling...")
-		for n in Player_discard.size():
-			player_deck.Powerhouz.append(Player_discard.pop_back())
+		for n in player_discard.size():
+			player_deck.Powerhouz.append(player_discard.pop_back())
 			print(player_deck.Powerhouz.size())
-			
 	var selected_cap = randi() % player_deck.Powerhouz.size()
 	var new_cap = Cap.new(player_deck.Powerhouz[selected_cap])
-	Player_hand.append(new_cap.cap)
+	player_hand.append(new_cap.cap)
 	game_board.get_node('HandPanel/HandContainer').add_child(new_cap)
 	player_deck.Powerhouz.erase(player_deck.Powerhouz[selected_cap])
 
+func reset_deck():
+	var hand_size = player_hand.size()
+	for caps in hand_size:
+		player_discard.append(player_hand.pop_front())
+	for caps in player_discard.size():
+		player_deck.Powerhouz.append(player_discard.pop_back())
+
+
 func end_turn():
+	game_board.get_node("AnnouncerPanel/Speech1/Text").text = "It's time to see who will hit it"
+	game_board.get_node("AnnouncerPanel/Speech2/Text").text = "Let's SLAM!"
 	game_board.get_node('AnnouncerPanel/PanelButton').text = "Roll"
 	for child in game_board.get_node('HandPanel/HandContainer').get_children():
 		child.disabled = true
 		
 	print("-------------------------------------------------------------------")
-	print("Hand: ", str(Player_hand))
+	print("Hand: ", str(player_hand))
 	print("Deck: ", str(player_deck.Powerhouz))
-	print("Discard: ",str(Player_discard))
+	print("Discard: ",str(player_discard))
 	print("-------------------------------------------------------------------")
-	game_board.turn_tracker(player_power, turn_order)
+	turn_tracker(player_power, turn_order)
 #	game_board.get_node('roll_die').disabled = false
 
 func play_cap(img):
 	var played = PlayedCap.new(img)
-#	power_label.text = str(player_power)
 	game_board.get_node('Player/PlayContainer').add_child(played)
 
 func commit_cap(cap_name):
-	Player_discard.append(cap_name)
-	Player_hand.erase(cap_name)
-	Player_move -= 1
+	player_discard.append(cap_name)
+	player_hand.erase(cap_name)
+	player_move -= 1
 	print("-------------------------------------------------------------------")
-	print("Discard:", Player_discard)
-	print("Hand:", Player_hand)
+	print("Discard:", player_discard)
+	print("Hand:", player_hand)
 	print("-------------------------------------------------------------------")
-	if Player_move == 0:
+	if player_move == 0:
 		end_turn()
 
 func update_momentum(user):
@@ -202,7 +276,6 @@ func set_dialogue(user, state, cap_name):
 			game_board.get_node('AnnouncerPanel/Speech1/Text').text = dialogue[0]
 			game_board.get_node('AnnouncerPanel/Speech2/Text').text = dialogue[1]
 
-
 func calculate_damage():
 	var damage
 
@@ -242,7 +315,7 @@ func resolve_round():
 	else:
 		print("New Round...")
 		move = 0
-		game_board.round_start()
+		game_manager.round_start()
 		return true
 
 func roll_die():
@@ -259,7 +332,7 @@ func start_turn(stance, turn_num):
 	turn_order = turn_num
 	success = 0
 	player_power = 0
-	Player_move = 3
+	player_move = 3
 	player_stance = stance
 	if player_stance == "Attack":
 		game_board.get_node('HandPanel').color = Color(1, 0, 0, 1)
@@ -270,18 +343,13 @@ func start_turn(stance, turn_num):
 #	power_label.text = str(player_power)
 	game_board.get_node('AnnouncerPanel/PanelButton').text = "Pass"
 
-	for n in x_factor + 2 - Player_hand.size(): #draw caps by x_factor
+	for n in x_factor + 2 - player_hand.size(): #draw caps by x_factor
 		draw_cap()
-	print("Hand:"+str(Player_hand))
+	print("Hand:"+str(player_hand))
 	print("-------------------------------------------------------------------")
 
 func fill_hud(user):
-#	var hud_res = game_board.get_node('hud/Panel/' + user + '/stat_box/resilience/value')
-#	var hud_str = game_board.get_node('hud/Panel/' + user + '/stat_box/strength/value')
-#	var hud_spe = game_board.get_node('hud/Panel/' + user + '/stat_box/speed/value')
-#	var hud_x = game_board.get_node('hud/Panel/' + user + '/stat_box/x_factor/value')
-#	var hud_cha = game_board.get_node('hud/Panel/' + user + '/stat_box/charisma/value')
-#	var hud_ali = game_board.get_node('hud/Panel/' + user + '/stat_box/alignment/value')
+
 	var hud_res = game_board.get_node(user + '/Stats/Resilience/Label')
 	var hud_str = game_board.get_node(user + '/Stats/Strength/Label')
 	var hud_spe = game_board.get_node(user + '/Stats/Speed/Label')

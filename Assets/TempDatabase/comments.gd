@@ -1,6 +1,6 @@
 # hit/miss = {move:[announcer1, announcer2]}
 const Hit = {
-	"Vertical Suplex Power Bomb": 
+	"Vertical Suplex Powerbomb": 
 		[
 			"[P1] Just went nucleur on [P2] with a Vertical Suplex Powerbomb!", 
 			"I don't think [P2] is getting up after that..."
@@ -79,7 +79,7 @@ const Hit = {
 }
 
 const Miss = {
-	"Vertical Power Bomb": 
+	"Vertical Suplex Powerbomb": 
 		[
 			"", 
 			""

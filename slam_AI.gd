@@ -43,15 +43,17 @@ var cap_database = preload('res://Assets/TempDatabase/move_cap_data.gd')
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	randomize()
-#	var select_slammer = randi() % my_slammers.slammer.size()
+
+#	set_player()
+#	setup()
+	
+func set_player():
 	var select_slammer = my_slammers.slammer[randi() % my_slammers.slammer.size()]
 	slammer = slammer_data.slammer[select_slammer]
 	game_board.get_node("Opponent/Slammer").texture = load("res://Assets/Slammers/" + str(select_slammer) + ".png")
 	print("AI Stats:", slammer)
-	setup()
 	
 func setup():
-	
 	resilience = slammer[0]
 	strength = slammer[1]
 	speed = slammer[2]
@@ -109,17 +111,23 @@ func discard_hand():
 	for n in hand_size:
 		player_discard.append(player_hand.pop_front())
 
+func reset_deck():
+	var hand_size = player_hand.size()
+	for caps in hand_size:
+		player_discard.append(player_hand.pop_front())
+	for caps in player_discard.size():
+		player_deck.Powerhouz.append(player_discard.pop_back())
 
 func play_cap(img):
 	var played = PlayedCap.new(img)
 #	power_label.text = str(player_power)
 	game_board.get_node('Opponent/PlayContainer').add_child(played)
 
-func update_momentum():
-	game_board.get_node('Opponent/MomentumBar').value += 1
+#func update_momentum():
+#	game_board.get_node('Opponent/MomentumBar').value += 1
 	
-func update_durability(damage):
-	game_board.get_node('Opponent/DurabilityBar').value -= damage
+#func update_durability(damage):
+#	game_board.get_node('Opponent/DurabilityBar').value -= damage
 
 func check_finisher():
 	if game_board.get_node('Opponent/MomentumBar').value == momentum_max:
@@ -174,7 +182,7 @@ func start_turn(stance, turn_num):
 #	if success == 3 and finish_him == true and player_stance == "Attack":
 #		use_finisher()
 		
-	game_board.turn_tracker(player_power, turn_order)
+	game_manager.turn_tracker(player_power, turn_order)
 
 func check_success():
 	success += 1
