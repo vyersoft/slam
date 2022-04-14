@@ -60,8 +60,8 @@ var pop_up = preload('res://pop_up.tscn')
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	randomize()
-	var splash = pop_up.instance()
-	game_board.add_child(splash)
+#	var splash = pop_up.instance()
+#	game_board.add_child(splash)
 #	setup_timer()
 #	set_player()
 #	setup()
