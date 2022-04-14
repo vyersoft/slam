@@ -2,7 +2,7 @@
 const Hit = {
 	"Vertical Suplex Powerbomb": 
 		[
-			"[P1] Just went nucleur on [P2] with a Vertical Suplex Powerbomb!", 
+			"[P1] Just went nuclear on [P2] with a Vertical Suplex Powerbomb!", 
 			"I don't think [P2] is getting up after that..."
 		],
 	"Gorilla Press Drop":
@@ -33,7 +33,7 @@ const Hit = {
 	"Hammerlock": 
 		[
 			"[P1] Has the arm of [P2] behind his back in a Hammerlock!",
-			"[P2]'s arm is looking like a lose cause!"
+			"[P2]'s arm is looking like a lost cause!"
 		],
 	"Ground and Pound": 
 		[
@@ -57,7 +57,7 @@ const Hit = {
 		],
 	"Shoulder Block": 
 		[
-			"Grabbing [P2]'s arm, [P1] goes for an Armbar Leg Sweep attemp!",
+			"Grabbing [P2]'s arm, [P1] goes for an Armbar Leg Sweep attempt!",
 			"[P2] Was just flattened like a pancake!"
 		],
 	"Bear Hug": 
@@ -72,7 +72,7 @@ const Hit = {
 		],
 	"Waist Lock": 
 		[
-			"Whoa! That's a tight waste lock [P1] has on [P2]",
+			"Whoa! That's a tight waist lock [P1] has on [P2]",
 			"Those ribs gotta be hurting for [P2]"
 		],
 
@@ -81,78 +81,78 @@ const Hit = {
 const Miss = {
 	"Vertical Suplex Powerbomb": 
 		[
-			"", 
-			""
+			"[P1] Muscles [P2] into position for a Vertical Suplex Powerbomb", 
+			"But [P2] breaks free! "
 		],
 	"Gorilla Press Drop":
 		[
-			"",
-			""
+			"[P1] Is lifting [P2] above his head for a Gorilla Press Drop! ",
+			"[P1] Doesn't have enough juice and [P2] escapes!"
 		],
 	"Double Underhook Power Bomb":
 		[
-			"",
-			""
+			"[P1] Locks up [P2] for a Double Underhook Power Bomb!",
+			"But [P2] slips out of [P1]'s hooks!"
 		],
 	"Powerbomb": 
 		[
-			"",
-			""
+			"[P1] Is trying to Powerbomb [P2]!",
+			"But [P2] is glued to the floor and going nowhere!"
 		],
 	"Superplex": 
 		[
-			"",
-			""
+			"Looks like [P1] is going for a Superplex on [P2]!",
+			"But [P2] reverses and takes the advantage!"
 		],
 	"Full Nelson": 
 		[
-			"",
-			""
+			"[P1] Is behind [P2] trying to get him into a Full Nelson",
+			"[P2] Is too strong for [P1] and won't allow it!"
 		],
 	"Hammerlock": 
 		[
-			"",
-			""
+			"[P1] Grabs [P2]'s arm and goes for a Hammerlock!",
+			"[P2] Twists and turns his way out of it!"
 		],
 	"Ground and Pound": 
 		[
-			"", 
-			""
+			"[P1] Get's on top of [P2] for a Ground & Pound!", 
+			"But [P2] throws [P1] right off of him!"
 		],
 	"Neck Breaker": 
 		[
-			"",
-			""
+			"[P1] Is trying get serious with a Neck Break on [P2]!",
+			"But [P2] is making [P1]'s attempt look silly!"
 		],
 	"Body Lock": 
 		[
-			"",
-			""
+			"[P1] Grabs [P2] for an apparent Body Lock",
+			"[P2] Is having none of it and breaks that weak Body Lock!"
 		],
 	"Choke Hold": 
 		[
-			"",
-			""
+			"[P1] Grabs [P2] by the neck in a Choke Hold",
+			"[P2] Breaks the hold by [P1] with ease!"
 		],
 	"Shoulder Block": 
 		[
-			"",
-			""
+			"[P1] Running straight for [P2] it looks like a Shoulder Block!",
+			"[P1] Just hit a brick wall and did more damage to himself!"
 		],
 	"Bear Hug": 
 		[
-			"",
-			""
+			"Oh, [P1] Goes for a Bear Hug",
+			"But [P2] is too fast for him this time!"
 		],
 	"Arm Bar Takedown": 
 		[
-			"",
-			""
+			"Why would [P1] go for an Arm Bar Takedown on [P2] right now?",
+			"They say play the odds around here [P2] has to keep taking his shots!"
 		],
 	"Waist Lock": 
 		[
-			"",
-			""
+			"[P1] 's connects around [P2] for a waist lock ",
+			"Oh no!  [P1]  doesn't have enough to hold [P2]"
 		],
 
 }

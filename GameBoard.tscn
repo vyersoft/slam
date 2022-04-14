@@ -1,4 +1,4 @@
-[gd_scene load_steps=35 format=2]
+[gd_scene load_steps=36 format=2]
 
 [ext_resource path="res://Assets/Fonts/Retro Gaming.ttf" type="DynamicFontData" id=1]
 [ext_resource path="res://Assets/Images/Arrow.png" type="Texture" id=2]
@@ -14,9 +14,7 @@
 [ext_resource path="res://Assets/Images/StatIcons/Strength.png" type="Texture" id=12]
 [ext_resource path="res://Assets/Images/StatIcons/X-factor.png" type="Texture" id=13]
 [ext_resource path="res://Assets/Images/StatIcons/Charisma.png" type="Texture" id=14]
-[ext_resource path="res://Assets/Images/Finisher Button.png" type="Texture" id=15]
-[ext_resource path="res://Assets/Images/FinisherButtonPressed.png" type="Texture" id=16]
-[ext_resource path="res://Assets/Images/FinisherButtonHighlight.png" type="Texture" id=17]
+[ext_resource path="res://Assets/Images/DieFace/1.png" type="Texture" id=15]
 [ext_resource path="res://Assets/Images/timerbox.png" type="Texture" id=18]
 [ext_resource path="res://FinisherButton.gd" type="Script" id=19]
 
@@ -84,6 +82,18 @@ shadow_size = 5
 [sub_resource type="DynamicFont" id=15]
 size = 14
 font_data = ExtResource( 1 )
+
+[sub_resource type="StreamTexture" id=16]
+flags = 4
+load_path = "res://.import/Finisher Button.png-670f17149da225b2220193459f52c5d6.stex"
+
+[sub_resource type="StreamTexture" id=17]
+flags = 4
+load_path = "res://.import/FinisherButtonPressed.png-c0c32c70144aa792b3b411c28e1a0a62.stex"
+
+[sub_resource type="StreamTexture" id=18]
+flags = 4
+load_path = "res://.import/FinisherButtonHighlight.png-ea6cc6eca3cdaf5fe51b6e6b1596aa04.stex"
 
 [sub_resource type="StyleBoxEmpty" id=9]
 
@@ -185,6 +195,7 @@ margin_left = 6.0
 margin_top = 6.0
 margin_right = -6.0
 margin_bottom = -6.0
+custom_colors/font_color = Color( 0, 0.678431, 0.85098, 1 )
 custom_fonts/font = SubResource( 10 )
 text = "Are you ready?"
 align = 1
@@ -210,6 +221,7 @@ margin_left = 6.0
 margin_top = 6.0
 margin_right = -6.0
 margin_bottom = -6.0
+custom_colors/font_color = Color( 0, 0.678431, 0.85098, 1 )
 custom_fonts/font = SubResource( 11 )
 text = "Let's begin!"
 align = 1
@@ -274,6 +286,13 @@ texture = ExtResource( 9 )
 expand = true
 flip_h = true
 
+[node name="Stance" type="TextureRect" parent="Player/Slammer"]
+anchor_top = 0.75
+anchor_right = 0.5
+anchor_bottom = 1.25
+margin_top = -7.62939e-06
+expand = true
+
 [node name="Stats" type="HBoxContainer" parent="Player"]
 anchor_left = 0.144
 anchor_top = 0.171
@@ -286,13 +305,13 @@ margin_bottom = 4.71999
 
 [node name="Resilience" type="VBoxContainer" parent="Player/Stats"]
 margin_right = 38.0
-margin_bottom = 56.0
+margin_bottom = 55.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="TextureRect" type="TextureRect" parent="Player/Stats/Resilience"]
 margin_right = 38.0
-margin_bottom = 36.0
+margin_bottom = 35.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 texture = ExtResource( 10 )
@@ -300,9 +319,9 @@ expand = true
 stretch_mode = 1
 
 [node name="Label" type="Label" parent="Player/Stats/Resilience"]
-margin_top = 40.0
+margin_top = 39.0
 margin_right = 38.0
-margin_bottom = 56.0
+margin_bottom = 55.0
 size_flags_horizontal = 3
 size_flags_vertical = 1
 custom_fonts/font = SubResource( 12 )
@@ -313,13 +332,13 @@ valign = 1
 [node name="Strength" type="VBoxContainer" parent="Player/Stats"]
 margin_left = 42.0
 margin_right = 80.0
-margin_bottom = 56.0
+margin_bottom = 55.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="TextureRect" type="TextureRect" parent="Player/Stats/Strength"]
 margin_right = 38.0
-margin_bottom = 36.0
+margin_bottom = 35.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 texture = ExtResource( 12 )
@@ -327,9 +346,9 @@ expand = true
 stretch_mode = 1
 
 [node name="Label" type="Label" parent="Player/Stats/Strength"]
-margin_top = 40.0
+margin_top = 39.0
 margin_right = 38.0
-margin_bottom = 56.0
+margin_bottom = 55.0
 size_flags_horizontal = 3
 size_flags_vertical = 1
 custom_fonts/font = SubResource( 12 )
@@ -340,13 +359,13 @@ valign = 1
 [node name="Speed" type="VBoxContainer" parent="Player/Stats"]
 margin_left = 84.0
 margin_right = 123.0
-margin_bottom = 56.0
+margin_bottom = 55.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="TextureRect" type="TextureRect" parent="Player/Stats/Speed"]
 margin_right = 39.0
-margin_bottom = 36.0
+margin_bottom = 35.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 texture = ExtResource( 11 )
@@ -354,9 +373,9 @@ expand = true
 stretch_mode = 1
 
 [node name="Label" type="Label" parent="Player/Stats/Speed"]
-margin_top = 40.0
+margin_top = 39.0
 margin_right = 39.0
-margin_bottom = 56.0
+margin_bottom = 55.0
 size_flags_horizontal = 3
 size_flags_vertical = 1
 custom_fonts/font = SubResource( 12 )
@@ -367,13 +386,13 @@ valign = 1
 [node name="X-Factor" type="VBoxContainer" parent="Player/Stats"]
 margin_left = 127.0
 margin_right = 165.0
-margin_bottom = 56.0
+margin_bottom = 55.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="TextureRect" type="TextureRect" parent="Player/Stats/X-Factor"]
 margin_right = 38.0
-margin_bottom = 36.0
+margin_bottom = 35.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 texture = ExtResource( 13 )
@@ -381,9 +400,9 @@ expand = true
 stretch_mode = 1
 
 [node name="Label" type="Label" parent="Player/Stats/X-Factor"]
-margin_top = 40.0
+margin_top = 39.0
 margin_right = 38.0
-margin_bottom = 56.0
+margin_bottom = 55.0
 size_flags_horizontal = 3
 size_flags_vertical = 1
 custom_fonts/font = SubResource( 12 )
@@ -394,13 +413,13 @@ valign = 1
 [node name="Charisma" type="VBoxContainer" parent="Player/Stats"]
 margin_left = 169.0
 margin_right = 208.0
-margin_bottom = 56.0
+margin_bottom = 55.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="TextureRect" type="TextureRect" parent="Player/Stats/Charisma"]
 margin_right = 39.0
-margin_bottom = 36.0
+margin_bottom = 35.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 texture = ExtResource( 14 )
@@ -408,9 +427,9 @@ expand = true
 stretch_mode = 1
 
 [node name="Label" type="Label" parent="Player/Stats/Charisma"]
-margin_top = 40.0
+margin_top = 39.0
 margin_right = 39.0
-margin_bottom = 56.0
+margin_bottom = 55.0
 size_flags_horizontal = 3
 size_flags_vertical = 1
 custom_fonts/font = SubResource( 12 )
@@ -493,6 +512,14 @@ margin_right = 1074.52
 texture = ExtResource( 9 )
 expand = true
 
+[node name="Stance" type="TextureRect" parent="Opponent/Slammer"]
+anchor_left = 0.5
+anchor_top = 0.75
+anchor_right = 1.0
+anchor_bottom = 1.25
+margin_top = -7.62939e-06
+expand = true
+
 [node name="Stats" type="HBoxContainer" parent="Opponent"]
 anchor_left = 0.144
 anchor_top = 0.171
@@ -505,13 +532,13 @@ margin_bottom = 4.71999
 
 [node name="Resilience" type="VBoxContainer" parent="Opponent/Stats"]
 margin_right = 38.0
-margin_bottom = 56.0
+margin_bottom = 55.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="TextureRect" type="TextureRect" parent="Opponent/Stats/Resilience"]
 margin_right = 38.0
-margin_bottom = 36.0
+margin_bottom = 35.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 texture = ExtResource( 10 )
@@ -519,9 +546,9 @@ expand = true
 stretch_mode = 1
 
 [node name="Label" type="Label" parent="Opponent/Stats/Resilience"]
-margin_top = 40.0
+margin_top = 39.0
 margin_right = 38.0
-margin_bottom = 56.0
+margin_bottom = 55.0
 size_flags_horizontal = 3
 size_flags_vertical = 1
 custom_fonts/font = SubResource( 12 )
@@ -532,13 +559,13 @@ valign = 1
 [node name="Strength" type="VBoxContainer" parent="Opponent/Stats"]
 margin_left = 42.0
 margin_right = 80.0
-margin_bottom = 56.0
+margin_bottom = 55.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="TextureRect" type="TextureRect" parent="Opponent/Stats/Strength"]
 margin_right = 38.0
-margin_bottom = 36.0
+margin_bottom = 35.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 texture = ExtResource( 12 )
@@ -546,9 +573,9 @@ expand = true
 stretch_mode = 1
 
 [node name="Label" type="Label" parent="Opponent/Stats/Strength"]
-margin_top = 40.0
+margin_top = 39.0
 margin_right = 38.0
-margin_bottom = 56.0
+margin_bottom = 55.0
 size_flags_horizontal = 3
 size_flags_vertical = 1
 custom_fonts/font = SubResource( 12 )
@@ -559,13 +586,13 @@ valign = 1
 [node name="Speed" type="VBoxContainer" parent="Opponent/Stats"]
 margin_left = 84.0
 margin_right = 123.0
-margin_bottom = 56.0
+margin_bottom = 55.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="TextureRect" type="TextureRect" parent="Opponent/Stats/Speed"]
 margin_right = 39.0
-margin_bottom = 36.0
+margin_bottom = 35.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 texture = ExtResource( 11 )
@@ -573,9 +600,9 @@ expand = true
 stretch_mode = 1
 
 [node name="Label" type="Label" parent="Opponent/Stats/Speed"]
-margin_top = 40.0
+margin_top = 39.0
 margin_right = 39.0
-margin_bottom = 56.0
+margin_bottom = 55.0
 size_flags_horizontal = 3
 size_flags_vertical = 1
 custom_fonts/font = SubResource( 12 )
@@ -586,13 +613,13 @@ valign = 1
 [node name="X-Factor" type="VBoxContainer" parent="Opponent/Stats"]
 margin_left = 127.0
 margin_right = 165.0
-margin_bottom = 56.0
+margin_bottom = 55.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="TextureRect" type="TextureRect" parent="Opponent/Stats/X-Factor"]
 margin_right = 38.0
-margin_bottom = 36.0
+margin_bottom = 35.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 texture = ExtResource( 13 )
@@ -600,9 +627,9 @@ expand = true
 stretch_mode = 1
 
 [node name="Label" type="Label" parent="Opponent/Stats/X-Factor"]
-margin_top = 40.0
+margin_top = 39.0
 margin_right = 38.0
-margin_bottom = 56.0
+margin_bottom = 55.0
 size_flags_horizontal = 3
 size_flags_vertical = 1
 custom_fonts/font = SubResource( 12 )
@@ -613,13 +640,13 @@ valign = 1
 [node name="Charisma" type="VBoxContainer" parent="Opponent/Stats"]
 margin_left = 169.0
 margin_right = 208.0
-margin_bottom = 56.0
+margin_bottom = 55.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="TextureRect" type="TextureRect" parent="Opponent/Stats/Charisma"]
 margin_right = 39.0
-margin_bottom = 36.0
+margin_bottom = 35.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 texture = ExtResource( 14 )
@@ -627,9 +654,9 @@ expand = true
 stretch_mode = 1
 
 [node name="Label" type="Label" parent="Opponent/Stats/Charisma"]
-margin_top = 40.0
+margin_top = 39.0
 margin_right = 39.0
-margin_bottom = 56.0
+margin_bottom = 55.0
 size_flags_horizontal = 3
 size_flags_vertical = 1
 custom_fonts/font = SubResource( 12 )
@@ -658,6 +685,7 @@ align = 2
 valign = 1
 
 [node name="Die" type="ColorRect" parent="."]
+visible = false
 anchor_left = 0.466
 anchor_top = 0.028
 anchor_right = 0.534
@@ -669,6 +697,7 @@ margin_bottom = 131.0
 color = Color( 0.513726, 0, 0.639216, 1 )
 
 [node name="DieRoll" type="Label" parent="Die"]
+visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 text = "##"
@@ -682,12 +711,13 @@ margin_top = 430.0
 margin_right = 971.0
 margin_bottom = 532.0
 disabled = true
-texture_normal = ExtResource( 15 )
-texture_pressed = ExtResource( 16 )
-texture_hover = ExtResource( 17 )
+texture_normal = SubResource( 16 )
+texture_pressed = SubResource( 17 )
+texture_hover = SubResource( 18 )
 script = ExtResource( 19 )
 
 [node name="Timer" type="Panel" parent="."]
+visible = false
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -718,3 +748,15 @@ margin_bottom = 19.0
 text = "TIME"
 align = 1
 valign = 1
+
+[node name="DieFace" type="TextureRect" parent="."]
+anchor_left = 0.466
+anchor_top = 0.375
+anchor_right = 0.534
+anchor_bottom = 0.497
+margin_left = -0.480042
+margin_top = -3.05176e-05
+margin_right = 0.47998
+margin_bottom = 0.160004
+texture = ExtResource( 15 )
+expand = true

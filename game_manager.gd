@@ -16,6 +16,8 @@ var turn_order = 2 #starts as 2nd Player by default
 var move = 0 #for resolving played caps
 var success = 0
 
+#var roll_timer = Timer.new()
+
 #slammer stats
 const slammer_data = preload("res://Assets/TempDatabase/slammer_data.gd")
 var slammer
@@ -32,6 +34,7 @@ onready var player_deck = preload("res://Assets/TempDatabase/game_deck.gd")
 #for updating labels and buttons
 onready var die_label = game_board.get_node('Die/DieRoll')
 onready var finisher_button = game_board.get_node('FinisherButton')
+onready var die_face = game_board.get_node('DieFace')
 #onready var durability_bar
 #onready var momentum_bar
 
@@ -47,8 +50,10 @@ onready var player_durability = game_board.get_node("Player/DurabilityBar")
 onready var opponent_played = game_board.get_node("Opponent/PlayContainer")
 onready var opponent_durability = game_board.get_node("Opponent/DurabilityBar")
 
-#set announce dialouges
+#set announcers and dialouges
 var commentary= preload("res://Assets/TempDatabase/comments.gd")
+onready var dub = game_board.get_node("AnnouncerPanel/Speech1/Text")
+onready var matt = game_board.get_node("AnnouncerPanel/Speech2/Text")
 
 var pop_up = preload('res://pop_up.tscn')
 
@@ -57,8 +62,14 @@ func _ready():
 	randomize()
 	var splash = pop_up.instance()
 	game_board.add_child(splash)
+#	setup_timer()
 #	set_player()
 #	setup()
+
+#func setup_timer():
+#	roll_timer.connect("timeout", self, "roll_die")
+#	roll_timer.set_one_shot(true)
+#	add_child(roll_timer)
 
 func reset_hand():
 	for child in game_board.get_node("HandPanel/HandContainer").get_children():
@@ -104,6 +115,11 @@ func round_start():
 		else:
 			player_2.start_turn("Attack", 1)
 			player_1.start_turn("Defence", 2)
+			
+	dub.text = "It's Round " + str(round_n)
+	matt.text = "[P1] is on the " + player_stance + "!"
+	game_board.get_node('Player/Slammer/Stance').texture = load("res://Assets/Images/" + player_stance + ".png")
+	game_board.get_node('Opponent/Slammer/Stance').texture = load("res://Assets/Images/" + slam_AI.player_stance + ".png")
 
 func turn_tracker(power, turn_num):
 	if turn_num == 1:
@@ -179,8 +195,8 @@ func reset_deck():
 
 
 func end_turn():
-	game_board.get_node("AnnouncerPanel/Speech1/Text").text = "It's time to see who will hit it"
-	game_board.get_node("AnnouncerPanel/Speech2/Text").text = "Let's SLAM!"
+	dub.text = "It's time settle this."
+	matt.text = "Let's SLAM!"
 	game_board.get_node('AnnouncerPanel/PanelButton').text = "Roll"
 	for child in game_board.get_node('HandPanel/HandContainer').get_children():
 		child.disabled = true
@@ -214,6 +230,7 @@ func update_momentum(user):
 func check_finisher():
 	if game_board.get_node('Player/MomentumBar').value == momentum_max:
 		if player_stance == "Attack" and success == 3:
+			dub.text = "[P1] is up for a finisher!"
 			finisher_button.disabled = false
 			finisher_button.visible = true
 		else:
@@ -255,26 +272,30 @@ func check_played_cap(user, die, stance, user_strenght, user_speed):
 		Player_cap.disabled = false
 		var power = calculate_power(die, Player_cap.cap_info, stance, user_strenght, user_speed)
 		if power == 0:
+			set_dialogue(user, "Miss", Player_cap.cap)
 			Player_cap.pressed = true
 #			game_board.get_node('AnnouncerPanel/Speech1/Text').text = str(commentary.Miss[Player_cap.cap])
 			for child in game_board.get_node(str(user) + '/PlayContainer').get_children():
 				if child.disabled == true:
 					child.queue_free()
+			return false
 		else:
 			update_momentum(user)
 			update_power(user, power)
 			set_dialogue(user, "Hit", Player_cap.cap)
+	else:
+		return false
 
 func set_dialogue(user, state, cap_name):
 	if user == "Player":
 		if state == "Hit":
 			var dialogue = commentary.Hit[cap_name]
-			game_board.get_node('AnnouncerPanel/Speech1/Text').text = dialogue[0]
-			game_board.get_node('AnnouncerPanel/Speech2/Text').text = dialogue[1]
+			dub.text = dialogue[0]
+			matt.text = dialogue[1]
 		else:
 			var dialogue = commentary.Miss[cap_name]
-			game_board.get_node('AnnouncerPanel/Speech1/Text').text = dialogue[0]
-			game_board.get_node('AnnouncerPanel/Speech2/Text').text = dialogue[1]
+			dub.text = dialogue[0]
+			matt.text = dialogue[1]
 
 func calculate_damage():
 	var damage
@@ -282,31 +303,48 @@ func calculate_damage():
 	if player_stance == "Attack":
 		damage = player_power - slam_AI.player_power
 		if damage > 0:
+			matt.text = "[P1] is dealing " + str(damage) + " damage to [P2]!"
 			update_durability("Opponent", damage)
-		else:
+		elif damage < 0:
+			matt.text = "[P1] is getting hit for " + str(abs(damage)) + "!"
 			update_durability("Player", damage)
+		else:
+			matt.text = "They completely blocked each other!!!"
 	else:
 		damage = slam_AI.player_power - player_power
 		if damage > 0:
+			matt.text = "[P1] is in pain for " + str(damage) + "!"
 			update_durability("Player", damage)
-		else:
+		elif damage < 0:
+			matt.text = "[P1] is hitting for " + str(abs(damage)) + "!"
 			update_durability("Opponent", damage)
+		else:
+			matt.text = "They both MISSED!"
 		print("Damage: " + str(damage))
+
+func finisher():
+	update_power("Player",25)
+	slam_AI.full_counter()
+	game_board.get_node('Player/MomentumBar').value = 0
+	dub.text = "[P1] went for a finisher!"
 
 func resolve_round():
 	print("Move:", move)
 	if move <= 2:
 		var die = roll_die()
-		check_played_cap("Player", die, player_stance, strength, speed)
-		check_played_cap("Opponent", die, slam_AI.player_stance, slam_AI.strength, slam_AI.speed)
+		var playcheck1 = check_played_cap("Player", die, player_stance, strength, speed)
+		var playcheck2 =check_played_cap("Opponent", die, slam_AI.player_stance, slam_AI.strength, slam_AI.speed)
 		check_finisher()
 		move += 1
+		if playcheck1 == false and playcheck2 == false:
+			move = 3
 		if move == 3:
 			game_board.get_node('AnnouncerPanel/PanelButton').text = "Deal Damage"
 			move += 1
 	elif move == 4:
 		game_board.get_node('AnnouncerPanel/PanelButton').text = "Next Round"
 		calculate_damage()
+		dub.text = "[P1] Hits for " + str(player_power) + ", while [P2] did " + str(slam_AI.player_power) + "."
 		print("Player Power:", player_power)
 		print("AI Power:", slam_AI.player_power)
 		print("Player HP:", game_board.get_node('Player/DurabilityBar').value)
@@ -321,8 +359,13 @@ func resolve_round():
 func roll_die():
 	for n in 3:
 		die_roll = randi() % 6 + 1
-	die_label.text = str(die_roll)
+#	die_label.text = str(die_roll)
+	die_face.texture = load('res://Assets/Images/DieFace/' + str(die_roll) + '.png')
 	return die_roll
+
+func shake_die():
+	die_roll = randi() % 6 + 1
+	die_face.texture = load('res://Assets/Images/DieFace/' + str(die_roll) + '.png')
 
 func start_turn(stance, turn_num):
 	print("-------------------------------------------------------------------")

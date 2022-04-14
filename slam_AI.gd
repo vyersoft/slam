@@ -200,10 +200,14 @@ func use_finisher():
 func full_counter():
 	if check_finisher() == true:
 		print("FULL COUNTER!!!")
+		game_manager.dub.text = "AAAND HE WENT FOR IT!"
+		game_manager.matt.text = "[P2] COUNTERS!!!"
 		game_manager.update_power("Opponent", 25)
 		game_board.get_node('Opponent/MomentumBar').value = 0
 	else:
 		print("It's a hit!")
+		game_manager.dub.text = "AAAAND [P2] WILL BE ON MEDICAL LEAVE!"
+		game_manager.matt.text = "IT'S A DIRECT HIT!!!"
 
 func discard_cap(cap_name):
 	player_discard.append(cap_name)
