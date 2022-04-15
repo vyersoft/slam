@@ -3,6 +3,7 @@ extends Node
 #set the gameboard
 onready var game_board = get_node('/root/GameBoard/')
 
+var username = ""
 var player_stance
 var player_power 
 var player_hand = []

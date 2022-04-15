@@ -63,4 +63,4 @@ margin_right = 900.0
 margin_bottom = 60.0
 rect_min_size = Vector2( 0, 60 )
 size_flags_horizontal = 3
-text = "Start"
+text = "Login"

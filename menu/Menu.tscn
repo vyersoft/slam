@@ -1,0 +1,50 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://menu/StreetFightsMenuBG.png" type="Texture" id=1]
+[ext_resource path="res://menu/Menu.gd" type="Script" id=2]
+
+[node name="Control" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+rect_pivot_offset = Vector2( -126, 69 )
+script = ExtResource( 2 )
+
+[node name="BG" type="TextureRect" parent="."]
+margin_right = 1590.0
+margin_bottom = 894.0
+texture = ExtResource( 1 )
+expand = true
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -20.0
+margin_top = -20.0
+margin_right = 20.0
+margin_bottom = 20.0
+
+[node name="Leaderboard" type="VBoxContainer" parent="VBoxContainer"]
+margin_right = 40.0
+margin_bottom = 14.0
+
+[node name="Label" type="Label" parent="VBoxContainer/Leaderboard"]
+margin_right = 40.0
+margin_bottom = 14.0
+
+[node name="UserInfo" type="VBoxContainer" parent="VBoxContainer"]
+margin_top = 18.0
+margin_right = 40.0
+margin_bottom = 38.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/UserInfo"]
+margin_right = 40.0
+margin_bottom = 20.0
+
+[node name="Button" type="Button" parent="VBoxContainer/UserInfo/HBoxContainer"]
+margin_right = 38.0
+margin_bottom = 20.0
+text = "Play"
+
+[connection signal="pressed" from="VBoxContainer/UserInfo/HBoxContainer/Button" to="." method="_on_Button_pressed"]
