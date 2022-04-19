@@ -29,7 +29,7 @@ var speed
 var x_factor
 var charisma
 var alignment
-
+var select_slammer
 #for updating labels
 #onready var die_label = game_board.get_node('die_roll/Panel/VBoxContainer/die_roll')
 #onready var power_label = game_board.get_node('Opponent/power_display/VBoxContainer/power')
@@ -48,9 +48,11 @@ func _ready():
 #	setup()
 	
 func set_player():
-	var select_slammer = my_slammers.slammer[randi() % my_slammers.slammer.size()]
+	select_slammer = my_slammers.slammer[randi() % my_slammers.slammer.size()]
 	slammer = slammer_data.slammer[select_slammer]
 	game_board.get_node("Opponent/Slammer").texture = load("res://Assets/Slammers/" + str(select_slammer) + ".png")
+	game_board.get_node('Opponent/Username').text =  "Slammer #{username}".format({"username" :select_slammer}) 
+
 	print("AI Stats:", slammer)
 	
 func setup():

@@ -271,6 +271,7 @@ margin_left = 178.0
 margin_top = 71.0
 margin_right = 568.0
 margin_bottom = 93.0
+custom_colors/font_color = Color( 0, 0, 0, 1 )
 custom_styles/fg = SubResource( 1 )
 custom_styles/bg = SubResource( 2 )
 
@@ -498,6 +499,7 @@ margin_left = -573.0
 margin_top = -289.0
 margin_right = -183.0
 margin_bottom = -267.0
+custom_colors/font_color = Color( 0, 0, 0, 1 )
 custom_styles/fg = SubResource( 7 )
 custom_styles/bg = SubResource( 8 )
 
@@ -760,3 +762,5 @@ margin_right = 0.47998
 margin_bottom = 0.160004
 texture = ExtResource( 15 )
 expand = true
+
+[node name="HTTPRequest" type="HTTPRequest" parent="."]
