@@ -30,6 +30,7 @@ var x_factor
 var charisma
 var alignment
 var select_slammer
+var slammer_name
 #for updating labels
 #onready var die_label = game_board.get_node('die_roll/Panel/VBoxContainer/die_roll')
 #onready var power_label = game_board.get_node('Opponent/power_display/VBoxContainer/power')
@@ -50,8 +51,9 @@ func _ready():
 func set_player():
 	select_slammer = my_slammers.slammer[randi() % my_slammers.slammer.size()]
 	slammer = slammer_data.slammer[select_slammer]
+	slammer_name = "#" + select_slammer
 	game_board.get_node("Opponent/Slammer").texture = load("res://Assets/Slammers/" + str(select_slammer) + ".png")
-	game_board.get_node('Opponent/Username').text =  "Slammer #{username}".format({"username" :select_slammer}) 
+	game_board.get_node('Opponent/Username').text =  "#" + select_slammer 
 
 	print("AI Stats:", slammer)
 	
@@ -76,6 +78,7 @@ func setup():
 		base_durability = 50
 	game_board.get_node('Opponent/DurabilityBar').max_value = base_durability
 	game_board.get_node('Opponent/DurabilityBar').value = base_durability
+	game_board.get_node('Opponent/DurabilityBar/DurabilityLabel').text = str(base_durability) + "/" + str(base_durability)
 	
 	#set momentum_max
 	if charisma == 5:
@@ -203,12 +206,12 @@ func full_counter():
 	if check_finisher() == true:
 		print("FULL COUNTER!!!")
 		game_manager.dub.text = "AAAND HE WENT FOR IT!"
-		game_manager.matt.text = "[P2] COUNTERS!!!"
+		game_manager.matt.text = slammer_name + " COUNTERS!!!"
 		game_manager.update_power("Opponent", 25)
 		game_board.get_node('Opponent/MomentumBar').value = 0
 	else:
 		print("It's a hit!")
-		game_manager.dub.text = "AAAAND [P2] WILL BE ON MEDICAL LEAVE!"
+		game_manager.dub.text = "AAAAND " + slammer_name + " WILL BE ON MEDICAL LEAVE!"
 		game_manager.matt.text = "IT'S A DIRECT HIT!!!"
 
 func discard_cap(cap_name):

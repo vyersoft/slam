@@ -35,6 +35,7 @@ var speed #adds def
 var x_factor #defines hand size
 var charisma #defines momentum
 var alignment #defines alignment
+var slammer_name
 
 #setting the player deck
 onready var player_deck = preload("res://Assets/TempDatabase/game_deck.gd")
@@ -144,8 +145,9 @@ func round_start():
 			player_2.start_turn("Attack", 1)
 			player_1.start_turn("Defence", 2)
 			
+	set_dialogue_color(1,1,1)
 	dub.text = "It's Round " + str(round_n)
-	matt.text = str(username).left(5) + " is on the " + player_stance + "!"
+	matt.text = slammer_name + " is on the " + player_stance + "!"
 	game_board.get_node('Player/Slammer/Stance').texture = load("res://Assets/Images/" + player_stance + ".png")
 	game_board.get_node('Opponent/Slammer/Stance').texture = load("res://Assets/Images/" + slam_AI.player_stance + ".png")
 
@@ -159,11 +161,14 @@ func turn_tracker(power, turn_num):
 func set_player():
 	var select_slammer = "1611" #fixed character for the alpha.
 	slammer = slammer_data.slammer[select_slammer]
+	slammer_name = "#" + select_slammer 
 	game_board.get_node("Player/Slammer").texture = load("res://Assets/Slammers/" + str(select_slammer) + ".png")
-	game_board.get_node('Player/Username').text  = username 
+	game_board.get_node('Player/Username').text  = slammer_name
 	print("Slammer Stats:", str(slammer))
 
 func setup():
+	fill_dialogue()
+	
 	resilience = slammer[0]
 	strength = slammer[1]
 	speed = slammer[2]
@@ -184,6 +189,7 @@ func setup():
 		base_durability = 50
 	game_board.get_node('Player/DurabilityBar').max_value = base_durability
 	game_board.get_node('Player/DurabilityBar').value = base_durability
+	game_board.get_node('Player/DurabilityBar/DurabilityLabel').text = str(base_durability) + "/" + str(base_durability)
 	
 	#set momentum_max
 	if charisma == 5:
@@ -225,7 +231,8 @@ func reset_deck():
 
 
 func end_turn():
-	dub.text = "It's time settle this."
+	set_dialogue_color(1,1,1)
+	dub.text = "It's time to settle this."
 	matt.text = "Let's SLAM!"
 	game_board.get_node('AnnouncerPanel/PanelButton').text = "Roll"
 	for child in game_board.get_node('HandPanel/HandContainer').get_children():
@@ -260,7 +267,8 @@ func update_momentum(user):
 func check_finisher():
 	if game_board.get_node('Player/MomentumBar').value == momentum_max:
 		if player_stance == "Attack" and success == 3:
-			dub.text = str(username).left(5) + " is up for a finisher!"
+			set_dialogue_color(1,0,0)
+			dub.text = slammer_name + " is up for a finisher!"
 			finisher_button.disabled = false
 			finisher_button.visible = true
 		else:
@@ -272,8 +280,10 @@ func check_finisher():
 
 func update_durability(user, damage):
 	game_board.get_node(str(user) + '/DurabilityBar').value -= abs(damage)
+	var durability_update = game_board.get_node(str(user) + '/DurabilityBar').value
+	game_board.get_node(user + '/DurabilityBar/DurabilityLabel').text = str(durability_update) + "/" + str(base_durability)
 	print(user)
-	print(game_board.get_node(str(user) + '/DurabilityBar').value)
+	print(game_board.get_node(user + '/DurabilityBar').value)
 
 func update_power(user, power):
 	if user == 'Player':
@@ -314,195 +324,206 @@ func check_played_cap(user, die, stance, user_strenght, user_speed):
 			update_power(user, power)
 			set_dialogue(user, "Hit", Player_cap.cap)
 	else:
+#		set_dialogue_color(1,1,1)
+#		dub.text = slammer_name + " is down."
+#		matt.text = slam_AI.slammer_name + " is getting a free hit!"
 		return false
 
-func set_dialogue(user, state, cap_name):
+func fill_dialogue():
 	Hit = {
 		"Vertical Suplex Powerbomb": 
 			[
-				str(game_manager.username.left(5)) + " Just went nuclear on "+"#"+str(slam_AI.select_slammer) + " with a Vertical Suplex Powerbomb!", 
-				"I don't think "+"#"+str(slam_AI.select_slammer) + " is getting up after that..."
+				slammer_name + " Just went nuclear on "+ slam_AI.slammer_name + " with a Vertical Suplex Powerbomb!", 
+				"I don't think "+ slam_AI.slammer_name + " is getting up after that..."
 			],
 		"Gorilla Press Drop":
 			[
-				str(game_manager.username.left(5)) + " Has "+"#"+str(slam_AI.select_slammer) + " lifted up above him for a Gorilla Press Drop!",
-				"#"+str(slam_AI.select_slammer) + " Was not expecting a drop like that!"
+				slammer_name + " Has "+ slam_AI.slammer_name + " lifted up above him for a Gorilla Press Drop!",
+				slam_AI.slammer_name + " Was not expecting a drop like that!"
 			],
 		"Double Underhook Power Bomb":
 			[
-				str(game_manager.username.left(5)) + " has "+"#"+str(slam_AI.select_slammer) + " locked! And lands a Double Underhook Power Bomb!",
-				"No way "+"#"+str(slam_AI.select_slammer) + " gets up after that crushing blow!"
+				slammer_name + " has "+ slam_AI.slammer_name + " locked! And lands a Double Underhook Power Bomb!",
+				"No way "+ slam_AI.slammer_name + " gets up after that crushing blow!"
 			],
 		"Powerbomb": 
 			[
-				str(game_manager.username.left(5)) + " Launches and slams "+"#"+str(slam_AI.select_slammer) + " with a Powerbomb!",
-				"#"+str(slam_AI.select_slammer) + " Is seeing stars!"
+				slammer_name + " Launches and slams "+ slam_AI.slammer_name + " with a Powerbomb!",
+				slam_AI.slammer_name + " Is seeing stars!"
 			],
 		"Superplex": 
 			[
-				"Superplex! " + str(game_manager.username.left(5)) + "Absolutely stuns "+"#"+str(slam_AI.select_slammer)+"!",
-				"Oh "+"#"+str(slam_AI.select_slammer) + " is not looking good after that!"
+				"Superplex! " + slammer_name + " Absolutely stuns "+ slam_AI.slammer_name+"!",
+				"Oh "+ slam_AI.slammer_name + " is not looking good after that!"
 			],
 		"Full Nelson": 
 			[
-				str(game_manager.username.left(5)) + " Snuck behind "+"#"+str(slam_AI.select_slammer) + " and put him into a Full Nelson!",
-				"#"+str(slam_AI.select_slammer) + " Is not looking comfortable!"
+				slammer_name + " Snuck behind "+ slam_AI.slammer_name + " and put him into a Full Nelson!",
+				slam_AI.slammer_name + " Is not looking comfortable!"
 			],
 		"Hammerlock": 
 			[
-				str(game_manager.username.left(5)) + " Has the arm of "+"#"+str(slam_AI.select_slammer) + " behind his back in a Hammerlock!",
-				"#"+str(slam_AI.select_slammer) + "'s arm is looking like a lost cause!"
+				slammer_name + " Has the arm of "+ slam_AI.slammer_name + " behind his back in a Hammerlock!",
+				slam_AI.slammer_name + "'s arm is looking like a lost cause!"
 			],
 		"Ground and Pound": 
 			[
-				"Whoa! " + str(game_manager.username.left(5)) + " is cookin' with that Ground & Pound on "+"#"+str(slam_AI.select_slammer)+"", 
-				"#"+str(slam_AI.select_slammer) + " Is gonna be chop liver after that!"
+				"Whoa! " + slammer_name + " is cookin' with that Ground & Pound on "+ slam_AI.slammer_name+"", 
+				slam_AI.slammer_name + " Is gonna be chop liver after that!"
 			],
 		"Neck Breaker": 
 			[
-				"Oh no it's a Neck Breaker on "+"#"+str(slam_AI.select_slammer)+"!",
-				str(game_manager.username.left(5)) + " Is ruthless in the streets!"
+				"Oh no it's a Neck Breaker on "+ slam_AI.slammer_name+"!",
+				slammer_name + " Is ruthless in the streets!"
 			],
 		"Body Lock": 
 			[
-				"And just like that " + str(game_manager.username.left(5)) + "has strong armed "+"#"+str(slam_AI.select_slammer) + " into a Body Lock",
-				"#"+str(slam_AI.select_slammer) + " Is going nowhere fast!"
+				"And just like that " + slammer_name + "has strong armed "+ slam_AI.slammer_name + " into a Body Lock",
+				slam_AI.slammer_name + " Is going nowhere fast!"
 			],
 		"Choke Hold": 
 			[
-				"Oh no! " + str(game_manager.username.left(5)) + "has the neck of "+"#"+str(slam_AI.select_slammer) + " in a vicious Choke Hold",
-				"I think "+"#"+str(slam_AI.select_slammer) + " is starting to turn purple!"
+				"Oh no! " + slammer_name + " has the neck of "+ slam_AI.slammer_name + " in a vicious Choke Hold",
+				"I think "+ slam_AI.slammer_name + " is starting to turn purple!"
 			],
 		"Shoulder Block": 
 			[
-				"Grabbing "+"#"+str(slam_AI.select_slammer)+"'s arm, " + str(game_manager.username.left(5)) + "goes for an Armbar Leg Sweep attempt!",
-				"#"+str(slam_AI.select_slammer) + " Was just flattened like a pancake!"
+				"Grabbing "+ slam_AI.slammer_name+"'s arm, " + slammer_name + " goes for an Armbar Leg Sweep attempt!",
+				slam_AI.slammer_name + " Was just flattened like a pancake!"
 			],
 		"Bear Hug": 
 			[
-				str(game_manager.username.left(5)) + " Has "+"#"+str(slam_AI.select_slammer) + " in a vicious bear hug!",
+				slammer_name + " Has "+ slam_AI.slammer_name + " in a vicious bear hug!",
 				"He's literally squeezing the life out of him!"
 			],
 		"Arm Bar Takedown": 
 			[
-				"Ouch! " + str(game_manager.username.left(5)) + "secured the Arm Bar Takedown on "+"#"+str(slam_AI.select_slammer)+"!",
-				"How fast is  " + str(game_manager.username.left(5)) + "?!?"
+				"Ouch! " + slammer_name + "secured the Arm Bar Takedown on "+ slam_AI.slammer_name+"!",
+				"How fast is  " + slammer_name + "?!?"
 			],
 		"Waist Lock": 
 			[
-				"Whoa! That's a tight waist lock " + str(game_manager.username.left(5)) + "has on "+"#"+str(slam_AI.select_slammer),
-				"Those ribs gotta be hurting for "+"#"+str(slam_AI.select_slammer)
+				"Whoa! That's a tight waist lock " + slammer_name + "has on "+ slam_AI.slammer_name,
+				"Those ribs gotta be hurting for "+ slam_AI.slammer_name
 			],
 
 	}
 	Miss = {
 		"Vertical Suplex Powerbomb": 
 			[
-				str(game_manager.username.left(5)) + " Muscles "+"#"+str(slam_AI.select_slammer) + " into position for a Vertical Suplex Powerbomb", 
-				"But "+"#"+str(slam_AI.select_slammer) + " breaks free! "
+				slammer_name + " Muscles "+ slam_AI.slammer_name + " into position for a Vertical Suplex Powerbomb", 
+				"But "+ slam_AI.slammer_name + " breaks free! "
 			],
 		"Gorilla Press Drop":
 			[
-				str(game_manager.username.left(5)) + " Is lifting "+"#"+str(slam_AI.select_slammer) + " above his head for a Gorilla Press Drop! ",
-				str(game_manager.username.left(5)) + " Doesn't have enough juice and "+"#"+str(slam_AI.select_slammer) + " escapes!"
+				slammer_name + " Is lifting "+ slam_AI.slammer_name + " above his head for a Gorilla Press Drop! ",
+				slammer_name + " Doesn't have enough juice and "+ slam_AI.slammer_name + " escapes!"
 			],
 		"Double Underhook Power Bomb":
 			[
-				str(game_manager.username.left(5)) + " Locks up "+"#"+str(slam_AI.select_slammer) + " for a Double Underhook Power Bomb!",
-				"But "+"#"+str(slam_AI.select_slammer) + " slips out of  " + str(game_manager.username.left(5)) + "'s hooks!"
+				slammer_name + " Locks up "+ slam_AI.slammer_name + " for a Double Underhook Power Bomb!",
+				"But "+ slam_AI.slammer_name + " slips out of  " + slammer_name + "'s hooks!"
 			],
 		"Powerbomb": 
 			[
-				str(game_manager.username.left(5)) + " Is trying to Powerbomb "+"#"+str(slam_AI.select_slammer)+"!",
-				"But "+"#"+str(slam_AI.select_slammer) + " is glued to the floor and going nowhere!"
+				slammer_name + " Is trying to Powerbomb "+ slam_AI.slammer_name+"!",
+				"But "+ slam_AI.slammer_name + " is glued to the floor and going nowhere!"
 			],
 		"Superplex": 
 			[
-				"Looks like " + str(game_manager.username.left(5)) + "is going for a Superplex on "+"#"+str(slam_AI.select_slammer)+"!",
-				"But "+"#"+str(slam_AI.select_slammer) + " reverses and takes the advantage!"
+				"Looks like " + slammer_name + " is going for a Superplex on "+ slam_AI.slammer_name+"!",
+				"But "+ slam_AI.slammer_name + " reverses and takes the advantage!"
 			],
 		"Full Nelson": 
 			[
-				str(game_manager.username.left(5)) + " Is behind "+"#"+str(slam_AI.select_slammer) + " trying to get him into a Full Nelson",
-				"#"+str(slam_AI.select_slammer) + " Is too strong for " + str(game_manager.username.left(5)) + "and won't allow it!"
+				slammer_name + " Is behind "+ slam_AI.slammer_name + " trying to get him into a Full Nelson",
+				slam_AI.slammer_name + " Is too strong for " + slammer_name + ", and won't allow it!"
 			],
 		"Hammerlock": 
 			[
-				str(game_manager.username.left(5)) + " Grabs "+"#"+str(slam_AI.select_slammer)+"'s arm and goes for a Hammerlock!",
-				"#"+str(slam_AI.select_slammer) + " Twists and turns his way out of it!"
+				slammer_name + " Grabs "+ slam_AI.slammer_name+"'s arm and goes for a Hammerlock!",
+				slam_AI.slammer_name + " Twists and turns his way out of it!"
 			],
 		"Ground and Pound": 
 			[
-				str(game_manager.username.left(5)) + " Get's on top of "+"#"+str(slam_AI.select_slammer) + " for a Ground & Pound!", 
-				"But "+"#"+str(slam_AI.select_slammer) + " throws " + str(game_manager.username.left(5)) + "right off of him!"
+				slammer_name + " Get's on top of "+ slam_AI.slammer_name + " for a Ground & Pound!", 
+				"But "+ slam_AI.slammer_name + " throws " + slammer_name + " right off of him!"
 			],
 		"Neck Breaker": 
 			[
-				str(game_manager.username.left(5)) + " Is trying get serious with a Neck Break on "+"#"+str(slam_AI.select_slammer)+"!",
-				"But "+"#"+str(slam_AI.select_slammer) + " is making  " + str(game_manager.username.left(5)) + "'s attempt look silly!"
+				slammer_name + " Is trying get serious with a Neck Break on "+ slam_AI.slammer_name+"!",
+				"But "+ slam_AI.slammer_name + " is making  " + slammer_name + "'s attempt look silly!"
 			],
 		"Body Lock": 
 			[
-				str(game_manager.username.left(5)) + " Grabs  " + str(game_manager.username.left(5)) + " for an apparent Body Lock",
-				"#"+str(slam_AI.select_slammer) + " Is having none of it and breaks that weak Body Lock!"
+				slammer_name + " Grabs  " + slammer_name + " for an apparent Body Lock",
+				slam_AI.slammer_name + " Is having none of it and breaks that weak Body Lock!"
 			],
 		"Choke Hold": 
 			[
-				str(game_manager.username.left(5)) + " Grabs "+"#"+str(slam_AI.select_slammer) + " by the neck in a Choke Hold",
-				"#"+str(slam_AI.select_slammer) + " Breaks the hold by " + str(game_manager.username.left(5)) + "with ease!"
+				slammer_name + " Grabs "+ slam_AI.slammer_name + " by the neck in a Choke Hold",
+				slam_AI.slammer_name + " Breaks the hold by " + slammer_name + "with ease!"
 			],
 		"Shoulder Block": 
 			[
-				str(game_manager.username.left(5)) + " Running straight for "+"#"+str(slam_AI.select_slammer) + " it looks like a Shoulder Block!",
-				str(game_manager.username.left(5)) + " Just hit a brick wall and did more damage to himself!"
+				slammer_name + " Running straight for "+ slam_AI.slammer_name + " it looks like a Shoulder Block!",
+				slammer_name + " Just hit a brick wall and did more damage to himself!"
 			],
 		"Bear Hug": 
 			[
-				"Oh, " + str(game_manager.username.left(5)) + "Goes for a Bear Hug",
-				"But "+"#"+str(slam_AI.select_slammer) + " is too fast for him this time!"
+				"Oh, " + slammer_name + "Goes for a Bear Hug",
+				"But "+ slam_AI.slammer_name + " is too fast for him this time!"
 			],
 		"Arm Bar Takedown": 
 			[
-				"Why would " + str(game_manager.username.left(5)) + "go for an Arm Bar Takedown on "+"#"+str(slam_AI.select_slammer) + " right now?",
-				"They say play the odds around here "+"#"+str(slam_AI.select_slammer) + " has to keep taking his shots!"
+				"Why would " + slammer_name + "go for an Arm Bar Takedown on "+ slam_AI.slammer_name + " right now?",
+				"They say play the odds around here "+ slam_AI.slammer_name + " has to keep taking his shots!"
 			],
 		"Waist Lock": 
 			[
-				str(game_manager.username.left(5)) + " 's connects around "+"#"+str(slam_AI.select_slammer) + " for a waist lock ",
-				"Oh no! " + str(game_manager.username.left(5)) + " doesn't have enough to hold "+"#"+str(slam_AI.select_slammer)
+				slammer_name + " 's connects around "+ slam_AI.slammer_name + " for a waist lock ",
+				"Oh no! " + slammer_name + " doesn't have enough to hold " + slam_AI.slammer_name
 			],
 
 	}	
+func set_dialogue_color(a,b,c):
+	dub.set("custom_colors/font_color", Color(a,b,c))
+	matt.set("custom_colors/font_color", Color(a,b,c))
+
+
+func set_dialogue(user, state, cap_name):
 	if user == "Player":
 		if state == "Hit":
+			set_dialogue_color(1,1,1)
 			var dialogue = Hit[cap_name]
 			dub.text = dialogue[0]
 			matt.text = dialogue[1]
 		else:
+			set_dialogue_color(1,0,0)
 			var dialogue = Miss[cap_name]
 			dub.text = dialogue[0]
 			matt.text = dialogue[1]
 
 func calculate_damage():
 	var damage
-
+	matt.set("custom_colors/font_color", Color(1,0,0))
 	if player_stance == "Attack":
 		damage = player_power - slam_AI.player_power
 		if damage > 0:
-			matt.text = str(username).left(5) + " is dealing " + str(damage) + " damage to "+slam_AI.select_slammer+"!"
+			matt.text = slammer_name + " is dealing " + str(damage) + " damage to " + slam_AI.slammer_name + "!"
 			update_durability("Opponent", damage)
 		elif damage < 0:
-			matt.text = str(username).left(5) + " is getting hit for " + str(abs(damage)) + "!"
+			matt.text = slammer_name + " is getting hit for " + str(abs(damage)) + "!"
 			update_durability("Player", damage)
 		else:
 			matt.text = "They completely blocked each other!!!"
 	else:
 		damage = slam_AI.player_power - player_power
 		if damage > 0:
-			matt.text = str(username).left(5) + " is in pain for " + str(damage) + "!"
+			matt.text = slammer_name + " is in pain for " + str(damage) + "!"
 			update_durability("Player", damage)
 		elif damage < 0:
-			matt.text = str(username).left(5) + " is hitting for " + str(abs(damage)) + "!"
+			matt.text = slammer_name + " is hitting for " + str(abs(damage)) + "!"
 			update_durability("Opponent", damage)
 		else:
 			matt.text = "They both MISSED!"
@@ -512,7 +533,8 @@ func finisher():
 	update_power("Player",25)
 	slam_AI.full_counter()
 	game_board.get_node('Player/MomentumBar').value = 0
-	dub.text = str(username).left(5) + " went for a finisher!"
+	set_dialogue_color(1,0,0)
+	dub.text = slammer_name + " went for a finisher!"
 
 func resolve_round():
 	print("Move:", move)
@@ -530,7 +552,11 @@ func resolve_round():
 	elif move == 4:
 		game_board.get_node('AnnouncerPanel/PanelButton').text = "Next Round"
 		calculate_damage()
-		dub.text = "{username}  Hits for ".format({"username" :username})+ str(player_power) + ", while "+"#"+str(slam_AI.select_slammer)+" did " + str(slam_AI.player_power) + "."
+		dub.set("custom_colors/font_color", Color(1,1,1))
+		if player_power == 0 and slam_AI.player_power == 0:
+			dub.text = "No one is landing anything."
+		else:
+			dub.text = slammer_name + " Hits for ".format({"username" :username})+ str(player_power) + ", while "+ slam_AI.slammer_name+" did " + str(slam_AI.player_power) + "."
 		print("Player Power:", player_power)
 		print("AI Power:", slam_AI.player_power)
 		print("Player HP:", game_board.get_node('Player/DurabilityBar').value)

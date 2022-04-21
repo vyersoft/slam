@@ -1,4 +1,4 @@
-[gd_scene load_steps=36 format=2]
+[gd_scene load_steps=38 format=2]
 
 [ext_resource path="res://Assets/Fonts/Retro Gaming.ttf" type="DynamicFontData" id=1]
 [ext_resource path="res://Assets/Images/Arrow.png" type="Texture" id=2]
@@ -45,6 +45,9 @@ corner_radius_top_right = 10
 corner_radius_bottom_right = 10
 shadow_size = 5
 
+[sub_resource type="DynamicFont" id=19]
+font_data = ExtResource( 1 )
+
 [sub_resource type="DynamicFont" id=12]
 size = 12
 outline_size = 1
@@ -78,6 +81,9 @@ corner_radius_bottom_left = 10
 corner_radius_top_left = 10
 corner_radius_bottom_left = 10
 shadow_size = 5
+
+[sub_resource type="DynamicFont" id=20]
+font_data = ExtResource( 1 )
 
 [sub_resource type="DynamicFont" id=15]
 size = 14
@@ -274,6 +280,16 @@ margin_bottom = 93.0
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 custom_styles/fg = SubResource( 1 )
 custom_styles/bg = SubResource( 2 )
+percent_visible = false
+
+[node name="DurabilityLabel" type="Label" parent="Player/DurabilityBar"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_colors/font_color = Color( 0.0784314, 0.0666667, 0.0784314, 0.784314 )
+custom_fonts/font = SubResource( 19 )
+text = "00/00"
+align = 1
+valign = 1
 
 [node name="Slammer" type="TextureRect" parent="Player"]
 anchor_left = 0.016
@@ -502,6 +518,16 @@ margin_bottom = -267.0
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 custom_styles/fg = SubResource( 7 )
 custom_styles/bg = SubResource( 8 )
+percent_visible = false
+
+[node name="DurabilityLabel" type="Label" parent="Opponent/DurabilityBar"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_colors/font_color = Color( 0.0784314, 0.0666667, 0.0784314, 0.784314 )
+custom_fonts/font = SubResource( 20 )
+text = "00/00"
+align = 1
+valign = 1
 
 [node name="Slammer" type="TextureRect" parent="Opponent"]
 anchor_left = 0.016
