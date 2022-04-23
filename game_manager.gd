@@ -107,7 +107,7 @@ func round_start():
 		print("Player Wins!")
 		var win_screen = pop_up.instance()
 		win_screen.get_node('CenterContainer/Panel/VBoxContainer/Label').text = "YOU WIN!!!"
-		win_screen.get_node("CenterContainer/Panel/StartButton").text = "Play again"
+		win_screen.get_node("CenterContainer/Panel/HBoxContainer/StartButton").text = "Play again"
 		game_board.add_child(win_screen)
 		var body = {"username":username, "slamEarned": 100, "won": true}
 		http.request("https://us-central1-scd-vote.cloudfunctions.net/app/updateSlamRecord", PoolStringArray(["Content-Type: application/json"]), true, HTTPClient.METHOD_POST,to_json(body) )
@@ -119,7 +119,7 @@ func round_start():
 		print("Player Lose!")
 		var win_screen = pop_up.instance()
 		win_screen.get_node('CenterContainer/Panel/VBoxContainer/Label').text = "YOU LOSE!!!"
-		win_screen.get_node("CenterContainer/Panel/StartButton").text = "Play again"
+		win_screen.get_node("CenterContainer/Panel/HBoxContainer/StartButton").text = "Play again"
 		game_board.add_child(win_screen)
 		var body = {"username":username, "slamEarned": 50, "won": false}
 		http.request("https://us-central1-scd-vote.cloudfunctions.net/app/updateSlamRecord", PoolStringArray(["Content-Type: application/json"]), true, HTTPClient.METHOD_POST,to_json(body) )
