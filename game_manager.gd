@@ -552,7 +552,7 @@ func resolve_round():
 		var playcheck1 = check_played_cap("Player", die, player_stance, strength, speed)
 		var playcheck2 =check_played_cap("Opponent", die, slam_AI.player_stance, slam_AI.strength, slam_AI.speed)
 		check_finisher()
-		game_board.get_node('Sound/roll').play()
+#		game_board.get_node('Sound/roll').play()
 		move += 1
 		if playcheck1 == false and playcheck2 == false:
 			move = 3
