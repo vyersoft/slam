@@ -1,0 +1,90 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://Assets/Fonts/Retro Gaming.ttf" type="DynamicFontData" id=1]
+[ext_resource path="res://Assets/Caps/Powerhouz/Success/Pheonix Splash.png" type="Texture" id=2]
+[ext_resource path="res://Assets/Caps/Powerhouz/Success/Vertical Suplex Powerbomb.png" type="Texture" id=3]
+[ext_resource path="res://PowerhouzButton.gd" type="Script" id=4]
+[ext_resource path="res://HighflyButton.gd" type="Script" id=5]
+[ext_resource path="res://deck_select.gd" type="Script" id=6]
+
+[sub_resource type="DynamicFont" id=1]
+size = 26
+font_data = ExtResource( 1 )
+
+[node name="deck_select" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 6 )
+
+[node name="ColorRect" type="ColorRect" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color( 0.831373, 0.831373, 0.831373, 0.352941 )
+
+[node name="Panel" type="Panel" parent="ColorRect"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -450.0
+margin_top = -189.0
+margin_right = 450.0
+margin_bottom = 189.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="ColorRect/Panel"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ColorRect/Panel/HBoxContainer"]
+margin_right = 448.0
+margin_bottom = 378.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="CenterContainer" type="CenterContainer" parent="ColorRect/Panel/HBoxContainer/VBoxContainer"]
+margin_right = 448.0
+margin_bottom = 334.0
+size_flags_vertical = 3
+
+[node name="TextureRect" type="TextureRect" parent="ColorRect/Panel/HBoxContainer/VBoxContainer/CenterContainer"]
+margin_left = 96.0
+margin_top = 39.0
+margin_right = 352.0
+margin_bottom = 295.0
+texture = ExtResource( 3 )
+
+[node name="PowerhouzButton" type="Button" parent="ColorRect/Panel/HBoxContainer/VBoxContainer"]
+margin_top = 338.0
+margin_right = 448.0
+margin_bottom = 378.0
+size_flags_horizontal = 3
+custom_fonts/font = SubResource( 1 )
+text = "Powerhouz"
+script = ExtResource( 4 )
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="ColorRect/Panel/HBoxContainer"]
+margin_left = 452.0
+margin_right = 900.0
+margin_bottom = 378.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="CenterContainer" type="CenterContainer" parent="ColorRect/Panel/HBoxContainer/VBoxContainer2"]
+margin_right = 448.0
+margin_bottom = 334.0
+size_flags_vertical = 3
+
+[node name="TextureRect" type="TextureRect" parent="ColorRect/Panel/HBoxContainer/VBoxContainer2/CenterContainer"]
+margin_left = 96.0
+margin_top = 39.0
+margin_right = 352.0
+margin_bottom = 295.0
+texture = ExtResource( 2 )
+
+[node name="HighflyButton" type="Button" parent="ColorRect/Panel/HBoxContainer/VBoxContainer2"]
+margin_top = 338.0
+margin_right = 448.0
+margin_bottom = 378.0
+custom_fonts/font = SubResource( 1 )
+text = "High Fly"
+script = ExtResource( 5 )

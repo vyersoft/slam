@@ -38,8 +38,11 @@ var alignment #defines alignment
 var slammer_name
 
 #setting the player deck
-onready var player_deck = preload("res://Assets/TempDatabase/game_deck.gd")
+onready var player_decklist = preload("res://Assets/TempDatabase/game_deck.gd")
+var player_deck
+
 onready var http: HTTPRequest = HTTPRequest.new()
+
 #for updating labels and buttons
 onready var die_label = game_board.get_node('Die/DieRoll')
 onready var finisher_button = game_board.get_node('FinisherButton')
@@ -72,22 +75,20 @@ func _ready():
 	randomize()
 	
 	add_child(http)
-#	var splash = pop_up.instance()
-#	game_board.add_child(splash)
-#	setup_timer()
-#	set_player()
-#	setup()
 
-#func setup_timer():
-#	roll_timer.connect("timeout", self, "roll_die")
-#	roll_timer.set_one_shot(true)
-#	add_child(roll_timer)
 func _on_HTTP_request_completed(result, _response_code, _headers, body ):
 	print("got response")
 	if result == 0:
 		var json = JSON.parse(body.get_string_from_utf8())
 		print(json)
 		
+func select_deck(decklist):
+	if decklist == "Powerhouz":
+		player_deck = player_decklist.Powerhouz
+	elif decklist == "High Fly":
+		player_deck = player_decklist.High_Fly
+	
+
 func reset_hand():
 	for child in game_board.get_node("HandPanel/HandContainer").get_children():
 		child.queue_free()
@@ -106,6 +107,7 @@ func round_start():
 	if opponent_durability.value == 0:
 		print("Player Wins!")
 		var win_screen = pop_up.instance()
+		game_board.get_node('Sound/applause').play()
 		win_screen.get_node('CenterContainer/Panel/VBoxContainer/Label').text = "YOU WIN!!!"
 		win_screen.get_node("CenterContainer/Panel/StartButton").text = "Play again"
 		game_board.add_child(win_screen)
@@ -207,27 +209,27 @@ func setup():
 	fill_hud("Player")
 
 func draw_cap():
-#	print("Player Deck:", player_deck.Powerhouz)
+#	print("Player Deck:", player_deck)
 	print("-------------------------------------------------------------------")
 	print("Player Draws...")
-	if player_deck.Powerhouz.size() == 0:
+	if player_deck.size() == 0:
 		print("Discard: ", player_discard)
 		print("shuffling...")
 		for n in player_discard.size():
-			player_deck.Powerhouz.append(player_discard.pop_back())
-			print(player_deck.Powerhouz.size())
-	var selected_cap = randi() % player_deck.Powerhouz.size()
-	var new_cap = Cap.new(player_deck.Powerhouz[selected_cap])
+			player_deck.append(player_discard.pop_back())
+			print(player_deck.size())
+	var selected_cap = randi() % player_deck.size()
+	var new_cap = Cap.new(player_deck[selected_cap])
 	player_hand.append(new_cap.cap)
 	game_board.get_node('HandPanel/HandContainer').add_child(new_cap)
-	player_deck.Powerhouz.erase(player_deck.Powerhouz[selected_cap])
+	player_deck.erase(player_deck[selected_cap])
 
 func reset_deck():
 	var hand_size = player_hand.size()
 	for caps in hand_size:
 		player_discard.append(player_hand.pop_front())
 	for caps in player_discard.size():
-		player_deck.Powerhouz.append(player_discard.pop_back())
+		player_deck.append(player_discard.pop_back())
 
 
 func end_turn():
@@ -240,7 +242,7 @@ func end_turn():
 		
 	print("-------------------------------------------------------------------")
 	print("Hand: ", str(player_hand))
-	print("Deck: ", str(player_deck.Powerhouz))
+	print("Deck: ", str(player_deck))
 	print("Discard: ",str(player_discard))
 	print("-------------------------------------------------------------------")
 	turn_tracker(player_power, turn_order)
@@ -313,6 +315,7 @@ func check_played_cap(user, die, stance, user_strenght, user_speed):
 		var power = calculate_power(die, Player_cap.cap_info, stance, user_strenght, user_speed)
 		if power == 0:
 			set_dialogue(user, "Miss", Player_cap.cap)
+			game_board.get_node('Sound/miss').play()
 			Player_cap.pressed = true
 #			game_board.get_node('AnnouncerPanel/Speech1/Text').text = str(commentary.Miss[Player_cap.cap])
 			for child in game_board.get_node(str(user) + '/PlayContainer').get_children():
@@ -323,6 +326,7 @@ func check_played_cap(user, die, stance, user_strenght, user_speed):
 			update_momentum(user)
 			update_power(user, power)
 			set_dialogue(user, "Hit", Player_cap.cap)
+			game_board.get_node('Sound/hit').play()
 	else:
 #		set_dialogue_color(1,1,1)
 #		dub.text = slammer_name + " is down."
@@ -486,6 +490,7 @@ func fill_dialogue():
 			],
 
 	}	
+	
 func set_dialogue_color(a,b,c):
 	dub.set("custom_colors/font_color", Color(a,b,c))
 	matt.set("custom_colors/font_color", Color(a,b,c))
@@ -512,9 +517,11 @@ func calculate_damage():
 		if damage > 0:
 			matt.text = slammer_name + " is dealing " + str(damage) + " damage to " + slam_AI.slammer_name + "!"
 			update_durability("Opponent", damage)
+			game_board.get_node('Sound/cheer').play()
 		elif damage < 0:
 			matt.text = slammer_name + " is getting hit for " + str(abs(damage)) + "!"
 			update_durability("Player", damage)
+			game_board.get_node('Sound/cheer').play()
 		else:
 			matt.text = "They completely blocked each other!!!"
 	else:
@@ -522,9 +529,11 @@ func calculate_damage():
 		if damage > 0:
 			matt.text = slammer_name + " is in pain for " + str(damage) + "!"
 			update_durability("Player", damage)
+			game_board.get_node('Sound/cheer').play()
 		elif damage < 0:
 			matt.text = slammer_name + " is hitting for " + str(abs(damage)) + "!"
 			update_durability("Opponent", damage)
+			game_board.get_node('Sound/cheer').play()
 		else:
 			matt.text = "They both MISSED!"
 		print("Damage: " + str(damage))
@@ -543,6 +552,7 @@ func resolve_round():
 		var playcheck1 = check_played_cap("Player", die, player_stance, strength, speed)
 		var playcheck2 =check_played_cap("Opponent", die, slam_AI.player_stance, slam_AI.strength, slam_AI.speed)
 		check_finisher()
+		game_board.get_node('Sound/roll').play()
 		move += 1
 		if playcheck1 == false and playcheck2 == false:
 			move = 3

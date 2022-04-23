@@ -203,6 +203,7 @@ func use_finisher():
 		game_manager.update_power("Opponent", 25)
 	
 func full_counter():
+	game_board.get_node('Sound/finisher').play()
 	if check_finisher() == true:
 		print("FULL COUNTER!!!")
 		game_manager.dub.text = "AAAND HE WENT FOR IT!"

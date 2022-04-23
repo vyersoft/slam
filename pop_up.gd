@@ -3,6 +3,8 @@ extends Control
 
 # Declare member variables here. Examples:
 var play_button
+var deck_select = preload('res://deck_select.tscn')
+onready var game_board = get_node('/root/GameBoard/')
 
 
 # Called when the node enters the scene tree for the first time.
@@ -19,17 +21,20 @@ func login ():
 	
 	
 func new_game():
-	randomize()
-	game_manager.reset_hand()
-	game_manager.set_player()
-	slam_AI.set_player()
-	game_manager.reset_deck()
-	slam_AI.reset_deck()
-	game_manager.setup()
-	slam_AI.setup()
-	game_manager.set_turns()
-	game_manager.round_start()
+	var select = deck_select.instance()
+	game_board.add_child(select)
 	queue_free()
+#	randomize()
+#	game_manager.reset_hand()
+#	game_manager.set_player()
+#	slam_AI.set_player()
+#	game_manager.reset_deck()
+#	slam_AI.reset_deck()
+#	game_manager.setup()
+#	slam_AI.setup()
+#	game_manager.set_turns()
+#	game_manager.round_start()
+#	queue_free()
 	
 
 func _Get_Api_Data():
