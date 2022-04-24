@@ -808,7 +808,7 @@ anchor_bottom = 1.0
 margin_left = 10.0
 margin_top = -20.0
 margin_bottom = -10.0
-text = "V_a1"
+text = "V_a1.1"
 
 [node name="Sound" type="Node" parent="."]
 
@@ -823,12 +823,10 @@ volume_db = 5.0
 [node name="cheer" type="AudioStreamPlayer" parent="Sound"]
 stream = ExtResource( 20 )
 volume_db = 5.0
-bus = "effect"
 
 [node name="finisher" type="AudioStreamPlayer" parent="Sound"]
 stream = ExtResource( 2 )
 volume_db = 6.0
-bus = "effect2"
 
 [node name="applause" type="AudioStreamPlayer" parent="Sound"]
 stream = ExtResource( 17 )
@@ -837,4 +835,3 @@ volume_db = 5.0
 [node name="roll" type="AudioStreamPlayer" parent="Sound"]
 stream = ExtResource( 21 )
 volume_db = 5.0
-bus = "effect2"
