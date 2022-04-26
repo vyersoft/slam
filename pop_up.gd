@@ -9,7 +9,7 @@ onready var game_board = get_node('/root/GameBoard/')
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	play_button = get_node("CenterContainer/Panel/StartButton")
+	play_button = get_node("CenterContainer/Panel/HBoxContainer/StartButton")
 	play_button.connect("pressed", self, "login")
 
 func login ():
@@ -55,13 +55,47 @@ func _on_HTTPRequest_request_completed(result, response_code, headers, body):
 		else:
 			game_manager.userSLAM = data.status.current_SLAM
 			game_manager.wins = data.status.wins
+		get_parent().get_node("pop_up/CenterContainer/Panel/HBoxContainer/RedeemButton").visible = true
 		$HTTPRequest.request("https://us-central1-scd-vote.cloudfunctions.net/app/getTop5")
 	elif data.call == "getTop5":
 		game_manager.top5Data = data.status
 		
-		print('PRINT')
-		print(game_manager.top5Data[0])
-		get_parent().get_node("pop_up/CenterContainer/Panel/VBoxContainer/Label").text = "Top 3 Players\n1. {Top1} - {Top1Wins} wins\n2. {Top2} - {Top2Wins} wins\n3. {Top3} - {Top3Wins} wins\n\nPlayer Name: {username}\nSLAM: {slam}\nWins: {wins}".format({
+
+		get_parent().get_node("pop_up/CenterContainer/Panel/VBoxContainer/Label").text = "Top 3 Players\n1. {Top1} - {Top1Wins} wins - {Top1Losses} losses\n2. {Top2} - {Top2Wins} wins - {Top2Losses} losses\n3. {Top3} - {Top3Wins} wins - {Top3Losses} losses\n4. {Top4} - {Top4Wins} wins - {Top4Losses} losses\n5. {Top5} - {Top5Wins} wins - {Top5Losses} losses\n\nPlayer Name: {username}\nSLAM: {slam}\nWins: {wins}".format({
+			"Top1":game_manager.top5Data[0].keys()[0],
+			"Top1Wins":game_manager.top5Data[0][game_manager.top5Data[0].keys()[0]].wins,
+			"Top1Losses":game_manager.top5Data[0][game_manager.top5Data[0].keys()[0]].times_played - game_manager.top5Data[0][game_manager.top5Data[0].keys()[0]].wins,
+			"Top2":game_manager.top5Data[1].keys()[0],
+			"Top2Wins":game_manager.top5Data[1][game_manager.top5Data[1].keys()[0]].wins,
+			"Top2Losses":game_manager.top5Data[1][game_manager.top5Data[1].keys()[0]].times_played - game_manager.top5Data[1][game_manager.top5Data[1].keys()[0]].wins,
+			"Top3":game_manager.top5Data[2].keys()[0],
+			"Top3Wins":game_manager.top5Data[2][game_manager.top5Data[2].keys()[0]].wins,   
+			"Top3Losses":game_manager.top5Data[2][game_manager.top5Data[2].keys()[0]].times_played - game_manager.top5Data[2][game_manager.top5Data[2].keys()[0]].wins,
+			"Top4":game_manager.top5Data[3].keys()[0],
+			"Top4Wins":game_manager.top5Data[3][game_manager.top5Data[3].keys()[0]].wins,   
+			"Top4Losses":game_manager.top5Data[3][game_manager.top5Data[3].keys()[0]].times_played - game_manager.top5Data[3][game_manager.top5Data[3].keys()[0]].wins,
+			"Top5":game_manager.top5Data[4].keys()[0],
+			"Top5Wins":game_manager.top5Data[4][game_manager.top5Data[4].keys()[0]].wins,   
+			"Top5Losses":game_manager.top5Data[4][game_manager.top5Data[4].keys()[0]].times_played - game_manager.top5Data[4][game_manager.top5Data[4].keys()[0]].wins,
+			"username" : game_manager.username, 
+			"slam" : game_manager.userSLAM, 
+			"wins": game_manager.wins
+			}) 
+	elif data.call == "addSlamRecord":
+		pass
+	elif data.call == "updateSlamRecord":
+		pass
+	elif data.call == "redeemSlam":
+		if typeof(data.status) == TYPE_STRING:
+			$AcceptDialog.window_title="Error"
+			$AcceptDialog.dialog_text = "You have no SLAM to redeem."
+			$AcceptDialog.show()
+		else:
+			$AcceptDialog.window_title="Success!"
+			$AcceptDialog.dialog_text = "SLAM redeemed."
+			$AcceptDialog.show()
+			game_manager.userSLAM = 0
+			get_parent().get_node("pop_up/CenterContainer/Panel/VBoxContainer/Label").text = "Top 5 Players\n1. {Top1} - {Top1Wins} wins\n2. {Top2} - {Top2Wins} wins\n3. {Top3} - {Top3Wins} wins\n\nPlayer Name: {username}\nSLAM: {slam}\nWins: {wins}".format({
 			"Top1":game_manager.top5Data[0].keys()[0],
 			"Top1Wins":game_manager.top5Data[0][game_manager.top5Data[0].keys()[0]].wins,
 			"Top2":game_manager.top5Data[1].keys()[0],
@@ -72,10 +106,6 @@ func _on_HTTPRequest_request_completed(result, response_code, headers, body):
 			"slam" : game_manager.userSLAM, 
 			"wins": game_manager.wins
 			}) 
-	elif data.call == "addSlamRecord":
-		pass
-	elif data.call == "updateSlamRecord":
-		pass
 	else:
 		push_error("Error occured")
 		
@@ -125,7 +155,7 @@ func _on_permissions(args):
 	print('in on permissions')
 	print(session.auth.actor)
 	
-	get_parent().get_node("pop_up/CenterContainer/Panel/StartButton").text = "Start"
+	get_parent().get_node("pop_up/CenterContainer/Panel/HBoxContainer/StartButton").text = "Start"
 	var body = {"username":session.auth.actor}
 	get_parent().get_node("pop_up/CenterContainer/Panel/VBoxContainer/TextureRect").visible = false
 	get_parent().get_node("pop_up/CenterContainer/Panel/VBoxContainer/Label").text = "Loading data..." 
@@ -162,3 +192,14 @@ func _on_accountdata(args):
 #	pass
 
 
+
+
+func _on_RedeemButton_pressed():
+	print("Redeeming SLAM")
+	var body = {"username":game_manager.username}
+	$HTTPRequest.request("https://us-central1-scd-vote.cloudfunctions.net/app/redeemSlam", PoolStringArray(["Content-Type: application/json"]), true, HTTPClient.METHOD_POST,to_json(body) )
+	pass # Replace with function body.
+
+
+func _on_AcceptDialog_ready():
+	pass # Replace with function body.
