@@ -15,12 +15,13 @@ func _ready():
 	Highfly_button.connect("pressed", self, "Highfly")
 
 func Powerhouz():
-	game_manager.select_deck("Powerhouz")
+#	game_manager.select_deck("Powerhouz")
 	game_manager.reset_hand()
 	game_manager.set_player()
 	slam_AI.set_player()
 	game_manager.reset_deck()
 	slam_AI.reset_deck()
+	game_manager.select_deck("Powerhouz")
 	game_manager.setup()
 	slam_AI.setup()
 	game_manager.set_turns()
@@ -28,12 +29,13 @@ func Powerhouz():
 	queue_free()
 	
 func Highfly():
-	game_manager.select_deck("High Fly")
+#	game_manager.select_deck("High Fly")
 	game_manager.reset_hand()
 	game_manager.set_player()
 	slam_AI.set_player()
 	game_manager.reset_deck()
 	slam_AI.reset_deck()
+	game_manager.select_deck("High Fly")
 	game_manager.setup()
 	slam_AI.setup()
 	game_manager.set_turns()

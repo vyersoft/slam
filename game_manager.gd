@@ -92,6 +92,11 @@ func select_deck(decklist):
 func reset_hand():
 	for child in game_board.get_node("HandPanel/HandContainer").get_children():
 		child.queue_free()
+	var hand_size = player_hand.size()
+	for caps in hand_size:
+		player_discard.append(player_hand.pop_front())
+	for caps in player_discard.size():
+		player_deck.append(player_discard.pop_back())
 
 func set_turns():
 	if randi() % 10 + 1 <= 5:
@@ -225,11 +230,15 @@ func draw_cap():
 	player_deck.erase(player_deck[selected_cap])
 
 func reset_deck():
-	var hand_size = player_hand.size()
-	for caps in hand_size:
-		player_discard.append(player_hand.pop_front())
+#	var hand_size = player_hand.size()
+#	for caps in hand_size:
+#		player_discard.append(player_hand.pop_front())
+#	for caps in player_discard.size():
+#		player_deck.append(player_discard.pop_back())
 	for caps in player_discard.size():
-		player_deck.append(player_discard.pop_back())
+		player_discard.pop_back()
+	for n in player_deck.size():
+		player_deck.pop_back()
 
 
 func end_turn():
@@ -335,6 +344,7 @@ func check_played_cap(user, die, stance, user_strenght, user_speed):
 
 func fill_dialogue():
 	Hit = {
+	#Powerhouz
 		"Vertical Suplex Powerbomb": 
 			[
 				slammer_name + " Just went nuclear on "+ slam_AI.slammer_name + " with a Vertical Suplex Powerbomb!", 
@@ -410,9 +420,87 @@ func fill_dialogue():
 				"Whoa! That's a tight waist lock " + slammer_name + "has on "+ slam_AI.slammer_name,
 				"Those ribs gotta be hurting for "+ slam_AI.slammer_name
 			],
+			
+	#High Fly
+		"Pheonix Splash":
+				[
+				slammer_name + " just landed a majestic Phoenix Splash on " + slam_AI.slammer_name + "!",
+				slammer_name + "'s skill set is so rare and so pro!"
+			],
+		"540 Spanish Fly":
+			[
+				"From high up! " + slammer_name + " grabs " + slam_AI.slammer_name + " and pulls him into a Spanish Fly",
+				slam_AI.slammer_name + " Just got swatted!"
+			],
+		"Flipping Mule Kick":
+			[
+				slammer_name + " knocks back " + slam_AI.slammer_name + " with a Flipping Mule Kick!",
+				slam_AI.slammer_name + " charged into that one face first!"
+			],
+		"Blockbuster":
+			[
+				slammer_name + " flies over [P2 ] connecting a Blockbuster!",
+				"That's going to be hard to recover from for " + slam_AI.slammer_name + "!"
+			],
+		"Enziguris":
+			[
+				"Out of nowhere " + slammer_name + " catches " + slam_AI.slammer_name + " with a surprise Enziguris! ",
+				slammer_name + "'s foot connected directly to " + slam_AI.slammer_name + "'s face!"
+			],
+		"Flying Dropkick":
+			[
+				"How did " + slammer_name + " just pull off a Flying Dropkick on " + slam_AI.slammer_name + "!?!?",
+				"A crazy mix of skill and luck is all I can think of!"
+			],
+		"Laser Moonsault":
+			[
+				"With stunning precision " + slammer_name + " lands a Laser Moonsault on " + slam_AI.slammer_name,
+				slam_AI.slammer_name + " had no clue that was coming!"
+			],
+		"Backflip Kick":
+			[
+				"Backflip Kick! " + slammer_name + " stuns " + slam_AI.slammer_name + " with that kick!",
+				"What stunning agility " + slammer_name + " posesses!"
+			],
+		"Jaw Jammer":
+			[
+				slammer_name + " has " + slam_AI.slammer_name + " around the neck in a Jaw Jammer",
+				slam_AI.slammer_name + " is gonna be eating from a straw!"
+			],
+		"Splash":
+			[
+				slammer_name + " soars into the sky for a Splash on " + slam_AI.slammer_name + "!",
+				"Watch out in the Splash zone! " + slam_AI.slammer_name + " got crushed!"
+			],
+		"Spinning Heel Kick":
+			[
+				"Turning around " + slammer_name + " catches " + slam_AI.slammer_name + " with a Spinning Heel Kick",
+				"Oh my! " + slam_AI.slammer_name + " dropped like a rock after that connected!"
+			],
+		"Catapult":
+			[
+				slammer_name + " Just sent " + slam_AI.slammer_name + " to the moon with that Catapult!",
+				"Whoa! " + slam_AI.slammer_name + " is in orbit!"
+			],
+		"Armbar Leg Sweep":
+			[
+				slammer_name + " puts " + slam_AI.slammer_name + " right to the ground with an Armbar Leg Sweep",
+				slam_AI.slammer_name + " has got to be hurting all over now!"
+			],
+		"Spinning Kick":
+			[
+				slam_AI.slammer_name + " just got walloped by a Spinning Kick from " + slammer_name,
+				"It's looking like the lights are out for " + slam_AI.slammer_name
+			],
+		"Hip Toss":
+			[
+				slammer_name + " easily throws " + slam_AI.slammer_name + " to the ground with a Hip Toss!",
+				slam_AI.slammer_name + " should just stay down!"
+			],
 
 	}
 	Miss = {
+	#Powerhouz
 		"Vertical Suplex Powerbomb": 
 			[
 				slammer_name + " Muscles "+ slam_AI.slammer_name + " into position for a Vertical Suplex Powerbomb", 
@@ -460,7 +548,7 @@ func fill_dialogue():
 			],
 		"Body Lock": 
 			[
-				slammer_name + " Grabs  " + slammer_name + " for an apparent Body Lock",
+				slammer_name + " Grabs  " + slam_AI.slammer_name + " for an apparent Body Lock",
 				slam_AI.slammer_name + " Is having none of it and breaks that weak Body Lock!"
 			],
 		"Choke Hold": 
@@ -487,6 +575,83 @@ func fill_dialogue():
 			[
 				slammer_name + " 's connects around "+ slam_AI.slammer_name + " for a waist lock ",
 				"Oh no! " + slammer_name + " doesn't have enough to hold " + slam_AI.slammer_name
+			],
+			
+	#High Fly
+		"Pheonix Splash":
+				[
+				slammer_name + " jumps, spins and flips for a Pheonix Splash " + slam_AI.slammer_name,
+				"But " + slam_AI.slammer_name + " rolls away just in time to miss it!"
+			],
+		"540 Spanish Fly":
+			[
+				"Looks like " + slammer_name + " is grabbing " + slam_AI.slammer_name + " for Spanish Fly",
+				slam_AI.slammer_name + " Just won't budge! Humiliating for " + slammer_name + "."
+			],
+		"Flipping Mule Kick":
+			[
+				slammer_name + " takes a shot at a Flipping Mule Kick.",
+				"But " + slammer_name + " trips over himself and misses!"
+			],
+		"Blockbuster":
+			[
+				slammer_name + " leaps for a Blockbuster on " + slam_AI.slammer_name + "!",
+				slam_AI.slammer_name + " ducks the move just in time! Will " + slammer_name + " land that attempt? "
+			],
+		"Enziguris":
+			[
+				"And " + slammer_name + " goes for a wild Enziguris!",
+				"But " + slam_AI.slammer_name + " is too fast and evades " + slammer_name + "'s foot!"
+			],
+		"Flying Dropkick":
+			[
+				"Is " + slammer_name + " going for the Flying Dropkick!?!?",
+				slam_AI.slammer_name + " was too quick and took the advantage! "
+			],
+		"Laser Moonsault":
+			[
+				"Is that " + slammer_name + " flying into the air for a Laser Moonsault!?!?",
+				"But " + slam_AI.slammer_name + " rolls out of the way just in time!"
+			],
+		"Backflip Kick":
+			[
+				slammer_name + " goes flying for a Backflip Kick on " + slam_AI.slammer_name + ".",
+				"But lands right on his face! What a whiff!"
+			],
+		"Jaw Jammer":
+			[
+				slammer_name + " is grabbing " + slam_AI.slammer_name + " in a Jaw Jammer hold!?!?",
+				"But " + slam_AI.slammer_name + " slips right of it!"
+			],
+		"Splash":
+			[
+				"Flying into the air. " + slammer_name + " is looking to do a Splash on " + slam_AI.slammer_name + ".",
+				slam_AI.slammer_name + " catches him mid-air and stops the attempt!"
+			],
+		"Spinning Heel Kick":
+			[
+				"Looks like " + slammer_name + " is going for a Spinning Heel Kick on " + slam_AI.slammer_name + ".",
+				"But " + slam_AI.slammer_name + " steps back and dodges the foot of " + slammer_name + "!"
+			],
+		"Catapult":
+			[
+				"Is " + slammer_name + " trying to launch " + slam_AI.slammer_name + " with a Catapult!?!?",
+				slam_AI.slammer_name + " is standing firm and won't budge!"
+			],
+		"Armbar Leg Sweep":
+			[
+				slammer_name + " grabs " + slam_AI.slammer_name + "'s arm for an Armbar Leg Sweep attempt!",
+				"But " + slam_AI.slammer_name + " didn't even miss a step!"
+			],
+		"Spinning Kick":
+			[
+				slammer_name + " launches in the air for a Spinning Kick on " + slam_AI.slammer_name + "!",
+				slammer_name + " missed by a mile!"
+			],
+		"Hip Toss":
+			[
+				slammer_name + " awkwardly grabs " + slam_AI.slammer_name + " in maybe a Hip Toss attempt?",
+				slammer_name + " needs to work on his fundamentals..."
 			],
 
 	}	
