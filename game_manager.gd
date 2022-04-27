@@ -8,6 +8,7 @@ var userSLAM = 0
 var top5Data = []
 var currAction = ""
 var wins = 0
+var move_list = []
 
 
 
@@ -239,6 +240,8 @@ func reset_deck():
 		player_discard.pop_back()
 	for n in player_deck.size():
 		player_deck.pop_back()
+	for move in move_list.size():
+		move_list.pop_back()
 
 
 func end_turn():
@@ -259,7 +262,9 @@ func end_turn():
 
 func play_cap(img):
 	var played = PlayedCap.new(img)
+	move_list.append(img)
 	game_board.get_node('Player/PlayContainer').add_child(played)
+	print("Moves Done:" , move_list)
 
 func commit_cap(cap_name):
 	player_discard.append(cap_name)
