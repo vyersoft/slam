@@ -8,14 +8,12 @@ var userSLAM = 0
 var top5Data = []
 var currAction = ""
 var wins = 0
-var move_list = []
-
+var move_list = {} #keeps records of player moves
+var move_counter = 0 #for tracking move order
 
 
 var player_stance
 var player_power 
-var player_hand = []
-var player_discard =[]
 var player_move = 3
 var die_roll
 var base_durability
@@ -39,8 +37,10 @@ var alignment #defines alignment
 var slammer_name
 
 #setting the player deck
-onready var player_decklist = preload("res://Assets/TempDatabase/game_deck.gd")
-var player_deck
+onready var deck_list = preload("res://Assets/TempDatabase/game_deck.gd")
+var player_deck = []
+var player_hand = []
+var player_discard =[]
 
 onready var http: HTTPRequest = HTTPRequest.new()
 
@@ -84,20 +84,26 @@ func _on_HTTP_request_completed(result, _response_code, _headers, body ):
 		print(json)
 		
 func select_deck(decklist):
+	print("Powerhouz:", deck_list.Powerhouz)
+	print("High Fly:", deck_list.High_Fly)
+	print("Selected:", decklist)
 	if decklist == "Powerhouz":
-		player_deck = player_decklist.Powerhouz
+		player_deck = deck_list.Powerhouz
 	elif decklist == "High Fly":
-		player_deck = player_decklist.High_Fly
+		player_deck = deck_list.High_Fly
+	print("Player Deck:", player_deck)
 	
 
 func reset_hand():
 	for child in game_board.get_node("HandPanel/HandContainer").get_children():
 		child.queue_free()
-	var hand_size = player_hand.size()
-	for caps in hand_size:
-		player_discard.append(player_hand.pop_front())
-	for caps in player_discard.size():
-		player_deck.append(player_discard.pop_back())
+#	var hand_size = player_hand.size()
+#	for caps in hand_size:
+#		player_discard.append(player_hand.pop_front())
+#	for caps in player_discard.size():
+#		player_deck.append(player_discard.pop_back())
+	player_hand.clear()
+	player_discard.clear()
 
 func set_turns():
 	if randi() % 10 + 1 <= 5:
@@ -215,7 +221,6 @@ func setup():
 	fill_hud("Player")
 
 func draw_cap():
-#	print("Player Deck:", player_deck)
 	print("-------------------------------------------------------------------")
 	print("Player Draws...")
 	if player_deck.size() == 0:
@@ -229,19 +234,17 @@ func draw_cap():
 	player_hand.append(new_cap.cap)
 	game_board.get_node('HandPanel/HandContainer').add_child(new_cap)
 	player_deck.erase(player_deck[selected_cap])
+	print("Powerhouz:", deck_list.Powerhouz)
+	print("High Fly:", deck_list.High_Fly)
 
 func reset_deck():
-#	var hand_size = player_hand.size()
-#	for caps in hand_size:
-#		player_discard.append(player_hand.pop_front())
-#	for caps in player_discard.size():
-#		player_deck.append(player_discard.pop_back())
 	for caps in player_discard.size():
 		player_discard.pop_back()
 	for n in player_deck.size():
 		player_deck.pop_back()
-	for move in move_list.size():
-		move_list.pop_back()
+	#erase contents of the move list
+	move_list.clear()
+	move_counter = 0
 
 
 func end_turn():
@@ -262,7 +265,7 @@ func end_turn():
 
 func play_cap(img):
 	var played = PlayedCap.new(img)
-	move_list.append(img)
+#	move_list.append(img)
 	game_board.get_node('Player/PlayContainer').add_child(played)
 	print("Moves Done:" , move_list)
 
@@ -322,12 +325,20 @@ func calculate_power(result, cap_info, stance, user_strength, user_speed):
 	else:
 		return 0
 
+func record_move(user, cap, state):
+	#records the action to the move list
+	if user == "Player":
+		move_counter += 1
+		move_list[move_counter] = {cap:state}
+		print(move_list)
+
 func check_played_cap(user, die, stance, user_strenght, user_speed):
 	if game_board.get_node(str(user) + '/PlayContainer').get_child_count() > move:
 		var Player_cap = game_board.get_node(str(user) + '/PlayContainer').get_child(move)
 		Player_cap.disabled = false
 		var power = calculate_power(die, Player_cap.cap_info, stance, user_strenght, user_speed)
 		if power == 0:
+			record_move(user, Player_cap.cap, "Miss")
 			set_dialogue(user, "Miss", Player_cap.cap)
 			game_board.get_node('Sound/miss').play()
 			Player_cap.pressed = true
@@ -335,8 +346,10 @@ func check_played_cap(user, die, stance, user_strenght, user_speed):
 			for child in game_board.get_node(str(user) + '/PlayContainer').get_children():
 				if child.disabled == true:
 					child.queue_free()
+					record_move(user, child.cap, "Miss")
 			return false
 		else:
+			record_move(user, Player_cap.cap, "Hit")
 			update_momentum(user)
 			update_power(user, power)
 			set_dialogue(user, "Hit", Player_cap.cap)
@@ -346,6 +359,7 @@ func check_played_cap(user, die, stance, user_strenght, user_speed):
 #		dub.text = slammer_name + " is down."
 #		matt.text = slam_AI.slammer_name + " is getting a free hit!"
 		return false
+
 
 func fill_dialogue():
 	Hit = {
