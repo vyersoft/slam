@@ -221,6 +221,7 @@ func setup():
 	fill_hud("Player")
 
 func draw_cap():
+#	print("Player Deck:", player_deck)
 	print("-------------------------------------------------------------------")
 	print("Player Draws...")
 	if player_deck.size() == 0:
