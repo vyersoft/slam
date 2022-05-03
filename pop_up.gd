@@ -85,6 +85,10 @@ func _on_HTTPRequest_request_completed(result, response_code, headers, body):
 		pass
 	elif data.call == "updateSlamRecord":
 		pass
+	elif data.call == "addMatchRecord":
+		pass
+	elif data.call == "updateMatchRecord":
+		pass
 	elif data.call == "redeemSlam":
 		if typeof(data.status) == TYPE_STRING:
 			$AcceptDialog.window_title="Error"

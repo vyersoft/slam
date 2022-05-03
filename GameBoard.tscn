@@ -1,4 +1,4 @@
-[gd_scene load_steps=44 format=2]
+[gd_scene load_steps=45 format=2]
 
 [ext_resource path="res://Assets/Fonts/Retro Gaming.ttf" type="DynamicFontData" id=1]
 [ext_resource path="res://Assets/Sounds/finisher.wav" type="AudioStream" id=2]
@@ -21,6 +21,7 @@
 [ext_resource path="res://FinisherButton.gd" type="Script" id=19]
 [ext_resource path="res://Assets/Sounds/cheer.ogg" type="AudioStream" id=20]
 [ext_resource path="res://Assets/Sounds/roll.mp3" type="AudioStream" id=21]
+[ext_resource path="res://game_manager.gd" type="Script" id=22]
 
 [sub_resource type="StreamTexture" id=21]
 flags = 4
@@ -801,6 +802,7 @@ texture = ExtResource( 15 )
 expand = true
 
 [node name="HTTPRequest" type="HTTPRequest" parent="."]
+script = ExtResource( 22 )
 
 [node name="Label" type="Label" parent="."]
 anchor_top = 1.0
@@ -835,3 +837,5 @@ volume_db = 5.0
 [node name="roll" type="AudioStreamPlayer" parent="Sound"]
 stream = ExtResource( 21 )
 volume_db = 5.0
+
+[connection signal="request_completed" from="HTTPRequest" to="." method="_on_HTTPRequest_request_completed"]

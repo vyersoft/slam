@@ -10,7 +10,15 @@ var currAction = ""
 var wins = 0
 var move_list = {} #keeps records of player moves
 var move_counter = 0 #for tracking move order
-
+var round_records = []
+var round_record = {}
+# round_record element:
+# round#: {
+# 	player_health: number,
+# 	ai_health: number,
+#	player_damage: number,
+#	ai_damage: number
+# }
 
 var player_stance
 var player_power 
@@ -22,7 +30,7 @@ var momentum_max
 var turn_order = 2 #starts as 2nd Player by default
 var move = 0 #for resolving played caps
 var success = 0
-
+var match_end_status = ""
 #var roll_timer = Timer.new()
 
 #slammer stats
@@ -35,7 +43,7 @@ var x_factor #defines hand size
 var charisma #defines momentum
 var alignment #defines alignment
 var slammer_name
-
+var matchId =""
 #setting the player deck
 onready var deck_list = preload("res://Assets/TempDatabase/game_deck.gd")
 var player_deck = []
@@ -73,15 +81,14 @@ var Hit = {}
 var Miss = {}
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	http.connect("request_completed", self, "_on_http_request_completed")
 	randomize()
 	
 	add_child(http)
 
-func _on_HTTP_request_completed(result, _response_code, _headers, body ):
-	print("got response")
-	if result == 0:
-		var json = JSON.parse(body.get_string_from_utf8())
-		print(json)
+
+
+
 		
 func select_deck(decklist):
 	print("Powerhouz:", deck_list.Powerhouz)
@@ -110,36 +117,91 @@ func set_turns():
 		player_1 = game_board.get_node('/root/game_manager/')
 		player_2 = game_board.get_node('/root/slam_AI/')
 		print("Attacker:Player")
+
 	else:
 		player_1 = game_board.get_node('/root/slam_AI/')
 		player_2 = game_board.get_node('/root/game_manager/')
 		print("Attacker: AI")
-		
+
+
+
+
+func _on_http_request_completed(result, response_code, headers, body):
+	var json = JSON.parse(body.get_string_from_utf8())
+	var data = json.result
+	if data.call == "addMatchRecord":
+		matchId = data.status
+		print(data.status)
+	elif data.call == "updateMatchRecord":
+		pass
+	elif data.call == "updateSlamRecord":
+		print('Sending match record update.')
+		if match_end_status == "win":
+			var end_record_body = {
+			"match_id":matchId,
+			"winner":username,
+			"rounds":round_records,
+			"moves":format_move_list()
+			}
+			http.request("https://us-central1-scd-vote.cloudfunctions.net/app/updateMatchRecord", PoolStringArray(["Content-Type: application/json"]), true, HTTPClient.METHOD_POST,to_json(end_record_body) )
+		else:
+			var end_record_body = {
+				"match_id":matchId,
+				"winner":"AI",
+				"rounds":round_records,
+				"moves":format_move_list()
+			}
+			http.request("https://us-central1-scd-vote.cloudfunctions.net/app/updateMatchRecord", PoolStringArray(["Content-Type: application/json"]), true, HTTPClient.METHOD_POST,to_json(end_record_body) )
+	else:
+		print(data)
+		push_error("Error occured.")
+
+
+func format_move_list():
+	var array_move_list = []
+	# Iterate through move_list
+	for key in move_list:
+		array_move_list.append(move_list[key])
+	
+	return array_move_list
+
 func round_start():
+	if round_n ==0:
+		# Adding this match to our records
+		var start_record_body = {"participant_1":username, "participant_2":"AI", "slammer_1":slammer_name, "slammer_2":slam_AI.slammer_name}
+		http.request("https://us-central1-scd-vote.cloudfunctions.net/app/addMatchRecord", PoolStringArray(["Content-Type: application/json"]), true, HTTPClient.METHOD_POST,to_json(start_record_body) )
+	
 	if opponent_durability.value == 0:
+		match_end_status = "win"
+		format_move_list()
 		print("Player Wins!")
 		var win_screen = pop_up.instance()
 		game_board.get_node('Sound/applause').play()
-		win_screen.get_node('CenterContainer/Panel/VBoxContainer/Label').text = "YOU WIN!!!"
-		win_screen.get_node("CenterContainer/Panel/HBoxContainer/StartButton").text = "Play again"
+		win_screen.get_node('CenterContainer/Panel/VBoxContainer/Label').text = "YOU WIN!!! Please refresh to play again."
+		win_screen.get_node("CenterContainer/Panel/HBoxContainer/StartButton").visible = false
 		game_board.add_child(win_screen)
-		var body = {"username":username, "slamEarned": 100, "won": true}
-		http.request("https://us-central1-scd-vote.cloudfunctions.net/app/updateSlamRecord", PoolStringArray(["Content-Type: application/json"]), true, HTTPClient.METHOD_POST,to_json(body) )
+		var slam_earned_body = {"username":username, "slamEarned": 100, "won": true}
+		http.request("https://us-central1-scd-vote.cloudfunctions.net/app/updateSlamRecord", PoolStringArray(["Content-Type: application/json"]), true, HTTPClient.METHOD_POST,to_json(slam_earned_body) )
 		round_n = 0
 		game_board.get_node('Player/MomentumBar').value = 0
 		game_board.get_node('Opponent/MomentumBar').value = 0
 		
+		
 	elif player_durability.value == 0:
+		match_end_status = "lose"
 		print("Player Lose!")
+		print(round_records)
+		print(format_move_list())
 		var win_screen = pop_up.instance()
-		win_screen.get_node('CenterContainer/Panel/VBoxContainer/Label').text = "YOU LOSE!!!"
-		win_screen.get_node("CenterContainer/Panel/HBoxContainer/StartButton").text = "Play again"
+		win_screen.get_node('CenterContainer/Panel/VBoxContainer/Label').text = "YOU LOSE!!! Please refresh to play again."
+		win_screen.get_node("CenterContainer/Panel/HBoxContainer/StartButton").visible = false
 		game_board.add_child(win_screen)
 		var body = {"username":username, "slamEarned": 50, "won": false}
 		http.request("https://us-central1-scd-vote.cloudfunctions.net/app/updateSlamRecord", PoolStringArray(["Content-Type: application/json"]), true, HTTPClient.METHOD_POST,to_json(body) )
 		round_n = 0
 		game_board.get_node('Player/MomentumBar').value = 0
 		game_board.get_node('Opponent/MomentumBar').value = 0
+		
 	else:
 		print("-------------------------------------------------------------------")
 		print("ROUND "+ str(round_n))
@@ -326,12 +388,16 @@ func calculate_power(result, cap_info, stance, user_strength, user_speed):
 	else:
 		return 0
 
-func record_move(user, cap, state):
+func record_move(user, cap, state, stance):
 	#records the action to the move list
 	if user == "Player":
 		move_counter += 1
-		move_list[move_counter] = {cap:state}
+		move_list[move_counter] = {cap:state, "doer":"player", "stance":stance, "round_number":round_n}
 		print(move_list)
+	else:
+		game_manager.move_counter += 1
+		game_manager.move_list[game_manager.move_counter] = {cap:state,"doer":"AI", "stance":stance, "round_number":round_n}
+		
 
 func check_played_cap(user, die, stance, user_strenght, user_speed):
 	if game_board.get_node(str(user) + '/PlayContainer').get_child_count() > move:
@@ -339,7 +405,7 @@ func check_played_cap(user, die, stance, user_strenght, user_speed):
 		Player_cap.disabled = false
 		var power = calculate_power(die, Player_cap.cap_info, stance, user_strenght, user_speed)
 		if power == 0:
-			record_move(user, Player_cap.cap, "Miss")
+			record_move(user, Player_cap.cap, "Miss",stance)
 			set_dialogue(user, "Miss", Player_cap.cap)
 			game_board.get_node('Sound/miss').play()
 			Player_cap.pressed = true
@@ -347,10 +413,10 @@ func check_played_cap(user, die, stance, user_strenght, user_speed):
 			for child in game_board.get_node(str(user) + '/PlayContainer').get_children():
 				if child.disabled == true:
 					child.queue_free()
-					record_move(user, child.cap, "Miss")
+					record_move(user, child.cap, "Miss",stance)
 			return false
 		else:
-			record_move(user, Player_cap.cap, "Hit")
+			record_move(user, Player_cap.cap, "Hit",stance)
 			update_momentum(user)
 			update_power(user, power)
 			set_dialogue(user, "Hit", Player_cap.cap)
@@ -756,8 +822,17 @@ func resolve_round():
 		print("AI Power:", slam_AI.player_power)
 		print("Player HP:", game_board.get_node('Player/DurabilityBar').value)
 		print("AI HP:", game_board.get_node('Opponent/DurabilityBar').value)
+		round_record.round = round_n
+		round_record.player1_power = player_power
+		round_record.player2_power = slam_AI.player_power
+		round_record.player1_hp = game_board.get_node('Player/DurabilityBar').value
+		round_record.player2_hp = game_board.get_node('Opponent/DurabilityBar').value
+		round_records.append(round_record)
+		round_record = {}
+		
 		move += 1
 	else:
+		
 		print("New Round...")
 		move = 0
 		game_manager.round_start()
@@ -784,10 +859,15 @@ func start_turn(stance, turn_num):
 	player_power = 0
 	player_move = 3
 	player_stance = stance
+	
 	if player_stance == "Attack":
 		game_board.get_node('HandPanel').color = Color(1, 0, 0, 1)
+		round_record.player1_position = "Attacker"
+		round_record.player2_position = "Defender"
 	else:
 		game_board.get_node('HandPanel').color = Color(0, 0, 1, 1)
+		round_record.player2_position = "Attacker"
+		round_record.player1_position = "Defender"
 #	stance_label.text = stance
 #	stance_label.text = Player_stance
 #	power_label.text = str(player_power)

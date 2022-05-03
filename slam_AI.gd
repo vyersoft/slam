@@ -197,6 +197,8 @@ func check_success():
 
 func use_finisher():
 	if game_board.get_node('Opponent/MomentumBar').value == momentum_max and player_stance == "Attack":
+		game_manager.move_counter += 1
+		game_manager.move_list[game_manager.move_counter] = {"Finisher":"Hit","doer":"AI", "stance":"Attack", "round_number":game_manager.round_n}
 		print("FINISH HIM!!!")
 		game_board.get_node('Opponent/MomentumBar').value = 0
 #		game_board.get_node('Opponent/finisher_button').disabled = true
@@ -205,6 +207,8 @@ func use_finisher():
 func full_counter():
 	game_board.get_node('Sound/finisher').play()
 	if check_finisher() == true:
+		game_manager.move_counter += 1
+		game_manager.move_list[game_manager.move_counter] = {"Finisher":"Miss","doer":"player", "stance":"Attack", "round_number":game_manager.round_n}
 		print("FULL COUNTER!!!")
 		game_manager.dub.text = "AAAND HE WENT FOR IT!"
 		game_manager.matt.text = slammer_name + " COUNTERS!!!"
@@ -212,6 +216,8 @@ func full_counter():
 		game_board.get_node('Opponent/MomentumBar').value = 0
 	else:
 		print("It's a hit!")
+		game_manager.move_counter += 1
+		game_manager.move_list[game_manager.move_counter] = {"Finisher":"Hit","doer":"player", "stance":"Attack", "round_number":game_manager.round_n}
 		game_manager.dub.text = "AAAAND " + slammer_name + " WILL BE ON MEDICAL LEAVE!"
 		game_manager.matt.text = "IT'S A DIRECT HIT!!!"
 
