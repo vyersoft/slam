@@ -3,7 +3,8 @@ extends Control
 
 # Declare member variables here. Examples:
 var play_button
-var deck_select = preload('res://deck_select.tscn')
+#var deck_select = preload('res://deck_select.tscn')
+var select_slammer = preload('res://SelectSlammer.tscn')
 onready var game_board = get_node('/root/GameBoard/')
 
 
@@ -21,20 +22,12 @@ func login ():
 	
 	
 func new_game():
-	var select = deck_select.instance()
+	
+#	var select = deck_select.instance()
+#	game_board.add_child(select)
+	var select = select_slammer.instance()
 	game_board.add_child(select)
 	queue_free()
-#	randomize()
-#	game_manager.reset_hand()
-#	game_manager.set_player()
-#	slam_AI.set_player()
-#	game_manager.reset_deck()
-#	slam_AI.reset_deck()
-#	game_manager.setup()
-#	slam_AI.setup()
-#	game_manager.set_turns()
-#	game_manager.round_start()
-#	queue_free()
 	
 
 func _Get_Api_Data():

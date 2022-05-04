@@ -43,7 +43,9 @@ var x_factor #defines hand size
 var charisma #defines momentum
 var alignment #defines alignment
 var slammer_name
-var matchId =""
+var matchId = ""
+var select_slammer = ""
+
 #setting the player deck
 onready var deck_list = preload("res://Assets/TempDatabase/game_deck.gd")
 var player_deck = []
@@ -235,7 +237,7 @@ func turn_tracker(power, turn_num):
 		p2_pow = power
 
 func set_player():
-	var select_slammer = "1611" #fixed character for the alpha.
+#	var select_slammer = "1611" #fixed character for the alpha.
 	slammer = slammer_data.slammer[select_slammer]
 	slammer_name = "#" + select_slammer 
 	game_board.get_node("Player/Slammer").texture = load("res://Assets/Slammers/" + str(select_slammer) + ".png")

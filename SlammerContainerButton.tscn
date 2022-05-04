@@ -1,0 +1,243 @@
+[gd_scene load_steps=18 format=2]
+
+[ext_resource path="res://Assets/Images/SelectSlammerBox.png" type="Texture" id=1]
+[ext_resource path="res://Assets/Images/SelectSlammerBoxActive.png" type="Texture" id=2]
+[ext_resource path="res://Assets/Images/SelectSlammerBoxDisabled.png" type="Texture" id=3]
+[ext_resource path="res://Assets/Images/SelectSlammerBoxHover.png" type="Texture" id=4]
+[ext_resource path="res://Assets/Fonts/Retro Gaming.ttf" type="DynamicFontData" id=5]
+[ext_resource path="res://Assets/Images/StatIcons/X-factor.png" type="Texture" id=6]
+[ext_resource path="res://Assets/Images/StatIcons/Charisma.png" type="Texture" id=7]
+[ext_resource path="res://Assets/Images/StatIcons/Resilience.png" type="Texture" id=8]
+[ext_resource path="res://Assets/Images/StatIcons/Strength.png" type="Texture" id=9]
+[ext_resource path="res://Assets/Slammers/1611.png" type="Texture" id=10]
+[ext_resource path="res://Assets/Images/StatIcons/Speed.png" type="Texture" id=11]
+[ext_resource path="res://SlammerContainerButton.gd" type="Script" id=12]
+
+[sub_resource type="DynamicFont" id=2]
+size = 14
+font_data = ExtResource( 5 )
+
+[sub_resource type="DynamicFont" id=3]
+size = 22
+outline_color = Color( 0.0784314, 0.0666667, 0.0784314, 1 )
+font_data = ExtResource( 5 )
+
+[sub_resource type="DynamicFont" id=4]
+font_data = ExtResource( 5 )
+
+[sub_resource type="DynamicFont" id=1]
+font_data = ExtResource( 5 )
+
+[sub_resource type="DynamicFont" id=5]
+size = 12
+outline_color = Color( 0.0784314, 0.0666667, 0.0784314, 1 )
+font_data = ExtResource( 5 )
+
+[node name="SlammerContainerButton" type="TextureButton"]
+rect_min_size = Vector2( 586, 184 )
+toggle_mode = true
+texture_normal = ExtResource( 1 )
+texture_pressed = ExtResource( 2 )
+texture_hover = ExtResource( 4 )
+texture_disabled = ExtResource( 3 )
+script = ExtResource( 12 )
+
+[node name="Alignment" type="Label" parent="."]
+margin_left = 180.0
+margin_top = 7.0
+margin_right = 428.0
+margin_bottom = 27.0
+custom_fonts/font = SubResource( 2 )
+text = "Powerhouz"
+valign = 1
+
+[node name="Username" type="Label" parent="."]
+margin_left = 180.0
+margin_top = 27.0
+margin_right = 380.0
+margin_bottom = 59.0
+custom_fonts/font = SubResource( 3 )
+text = "[Username]"
+valign = 1
+
+[node name="DurabilityLabel" type="Label" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 180.0
+margin_top = 60.0
+margin_right = -206.0
+margin_bottom = -99.0
+custom_fonts/font = SubResource( 4 )
+text = "Durability: 00"
+valign = 1
+
+[node name="MomentumLabel" type="Label" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 180.0
+margin_top = 85.0
+margin_right = -206.0
+margin_bottom = -74.0
+custom_fonts/font = SubResource( 1 )
+text = "Momentum: 00"
+valign = 1
+
+[node name="Stats" type="HBoxContainer" parent="."]
+anchor_left = 0.307
+anchor_top = 0.625
+anchor_right = 0.662
+anchor_bottom = 0.929
+margin_left = 0.0979919
+margin_right = 0.0679626
+margin_bottom = 0.0639954
+rect_min_size = Vector2( 208, 56 )
+size_flags_horizontal = 0
+size_flags_vertical = 0
+
+[node name="Resilience" type="VBoxContainer" parent="Stats"]
+margin_right = 38.0
+margin_bottom = 56.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="TextureRect" type="TextureRect" parent="Stats/Resilience"]
+margin_right = 38.0
+margin_bottom = 36.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = ExtResource( 8 )
+expand = true
+stretch_mode = 1
+
+[node name="Label" type="Label" parent="Stats/Resilience"]
+margin_top = 40.0
+margin_right = 38.0
+margin_bottom = 56.0
+size_flags_horizontal = 3
+size_flags_vertical = 1
+custom_fonts/font = SubResource( 5 )
+text = "1"
+align = 1
+valign = 1
+
+[node name="Strength" type="VBoxContainer" parent="Stats"]
+margin_left = 42.0
+margin_right = 80.0
+margin_bottom = 56.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="TextureRect" type="TextureRect" parent="Stats/Strength"]
+margin_right = 38.0
+margin_bottom = 36.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = ExtResource( 9 )
+expand = true
+stretch_mode = 1
+
+[node name="Label" type="Label" parent="Stats/Strength"]
+margin_top = 40.0
+margin_right = 38.0
+margin_bottom = 56.0
+size_flags_horizontal = 3
+size_flags_vertical = 1
+custom_fonts/font = SubResource( 5 )
+text = "1"
+align = 1
+valign = 1
+
+[node name="Speed" type="VBoxContainer" parent="Stats"]
+margin_left = 84.0
+margin_right = 123.0
+margin_bottom = 56.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="TextureRect" type="TextureRect" parent="Stats/Speed"]
+margin_right = 39.0
+margin_bottom = 36.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = ExtResource( 11 )
+expand = true
+stretch_mode = 1
+
+[node name="Label" type="Label" parent="Stats/Speed"]
+margin_top = 40.0
+margin_right = 39.0
+margin_bottom = 56.0
+size_flags_horizontal = 3
+size_flags_vertical = 1
+custom_fonts/font = SubResource( 5 )
+text = "1"
+align = 1
+valign = 1
+
+[node name="X-Factor" type="VBoxContainer" parent="Stats"]
+margin_left = 127.0
+margin_right = 165.0
+margin_bottom = 56.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="TextureRect" type="TextureRect" parent="Stats/X-Factor"]
+margin_right = 38.0
+margin_bottom = 36.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = ExtResource( 6 )
+expand = true
+stretch_mode = 1
+
+[node name="Label" type="Label" parent="Stats/X-Factor"]
+margin_top = 40.0
+margin_right = 38.0
+margin_bottom = 56.0
+size_flags_horizontal = 3
+size_flags_vertical = 1
+custom_fonts/font = SubResource( 5 )
+text = "1"
+align = 1
+valign = 1
+
+[node name="Charisma" type="VBoxContainer" parent="Stats"]
+margin_left = 169.0
+margin_right = 208.0
+margin_bottom = 56.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="TextureRect" type="TextureRect" parent="Stats/Charisma"]
+margin_right = 39.0
+margin_bottom = 36.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = ExtResource( 7 )
+expand = true
+stretch_mode = 1
+
+[node name="Label" type="Label" parent="Stats/Charisma"]
+margin_top = 40.0
+margin_right = 39.0
+margin_bottom = 56.0
+size_flags_horizontal = 3
+size_flags_vertical = 1
+custom_fonts/font = SubResource( 5 )
+text = "1"
+align = 1
+valign = 1
+
+[node name="SlammerImg" type="TextureRect" parent="."]
+anchor_left = 0.02
+anchor_top = 0.065
+anchor_right = 0.294
+anchor_bottom = 0.935
+margin_left = 0.279999
+margin_top = 0.039999
+margin_right = -0.283997
+margin_bottom = -0.0400085
+size_flags_horizontal = 0
+size_flags_vertical = 0
+texture = ExtResource( 10 )
+expand = true
