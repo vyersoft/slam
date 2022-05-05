@@ -14,6 +14,7 @@ func _ready():
 	play_button.connect("pressed", self, "login")
 
 func login ():
+	$"../".get_node("Sound/ClickSound").play()
 	var game_manager = get_node("/root/game_manager")
 	if game_manager.username == "":
 		_on_ConnectWallet_pressed()
@@ -158,8 +159,6 @@ func _on_permissions(args):
 	get_parent().get_node("pop_up/CenterContainer/Panel/VBoxContainer/Label").text = "Loading data..." 
 	$HTTPRequest.request("https://us-central1-scd-vote.cloudfunctions.net/app/getSlamRecord", PoolStringArray(["Content-Type: application/json"]), true, HTTPClient.METHOD_POST,to_json(body) )
 	
-	
-
 #	transfer(session)
 	
 func getAccountData(link, session):
@@ -184,14 +183,10 @@ func _on_accountdata(args):
 	$Account.text = row.acc
 	$Name.text = row.name
 	$Avatar.text = row.avatar
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
-
-
 
 
 func _on_RedeemButton_pressed():
+	$"../".get_node("Sound/Redeem").play()
 	print("Redeeming SLAM")
 	var body = {"username":game_manager.username}
 	$HTTPRequest.request("https://us-central1-scd-vote.cloudfunctions.net/app/redeemSlam", PoolStringArray(["Content-Type: application/json"]), true, HTTPClient.METHOD_POST,to_json(body) )

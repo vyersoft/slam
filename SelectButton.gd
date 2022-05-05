@@ -13,6 +13,7 @@ func _ready():
 	pass # Replace with function body.
 
 func _pressed():
+	$"../../".get_node("Sound/ClickSound").play()
 	print("Pressed Select")
 	for child in $"../ScrollContainer".get_node("GridContainer").get_children():
 		if child.pressed == true:

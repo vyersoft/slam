@@ -24,7 +24,7 @@ func _init(name):
 	texture_normal = load(str("res://Assets/Caps/Powerhouz/Success/",cap,".png"))
 
 func _pressed():
-
+	$"../../../".get_node("Sound/PlayCap").play()
 	game_manager.play_cap(cap)
 #	game_manager.discard_cap(cap)
 	game_manager.commit_cap(cap)

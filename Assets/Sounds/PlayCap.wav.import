@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/PlayCap.wav-d75fc28b59b3d2aa3c27cdbe5395f7ac.sample"
+
+[deps]
+
+source_file="res://Assets/Sounds/PlayCap.wav"
+dest_files=[ "res://.import/PlayCap.wav-d75fc28b59b3d2aa3c27cdbe5395f7ac.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop=false
+compress/mode=0

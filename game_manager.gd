@@ -83,15 +83,13 @@ var Hit = {}
 var Miss = {}
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	game_board.get_node('Sound/bgm').play()
 	http.connect("request_completed", self, "_on_http_request_completed")
 	randomize()
 	
 	add_child(http)
 
 
-
-
-		
 func select_deck(decklist):
 	print("Powerhouz:", deck_list.Powerhouz)
 	print("High Fly:", deck_list.High_Fly)
@@ -106,13 +104,9 @@ func select_deck(decklist):
 func reset_hand():
 	for child in game_board.get_node("HandPanel/HandContainer").get_children():
 		child.queue_free()
-#	var hand_size = player_hand.size()
-#	for caps in hand_size:
-#		player_discard.append(player_hand.pop_front())
-#	for caps in player_discard.size():
-#		player_deck.append(player_discard.pop_back())
 	player_hand.clear()
 	player_discard.clear()
+
 
 func set_turns():
 	if randi() % 10 + 1 <= 5:
@@ -124,8 +118,6 @@ func set_turns():
 		player_1 = game_board.get_node('/root/slam_AI/')
 		player_2 = game_board.get_node('/root/game_manager/')
 		print("Attacker: AI")
-
-
 
 
 func _on_http_request_completed(result, response_code, headers, body):
@@ -164,8 +156,8 @@ func format_move_list():
 	# Iterate through move_list
 	for key in move_list:
 		array_move_list.append(move_list[key])
-	
 	return array_move_list
+
 
 func round_start():
 	if round_n ==0:
@@ -178,6 +170,7 @@ func round_start():
 		format_move_list()
 		print("Player Wins!")
 		var win_screen = pop_up.instance()
+		game_board.get_node('Sound/bgm').stop()
 		game_board.get_node('Sound/applause').play()
 		win_screen.get_node('CenterContainer/Panel/VBoxContainer/Label').text = "YOU WIN!!! Please refresh to play again."
 		win_screen.get_node("CenterContainer/Panel/HBoxContainer/StartButton").visible = false
@@ -187,13 +180,13 @@ func round_start():
 		round_n = 0
 		game_board.get_node('Player/MomentumBar').value = 0
 		game_board.get_node('Opponent/MomentumBar').value = 0
-		
-		
 	elif player_durability.value == 0:
 		match_end_status = "lose"
 		print("Player Lose!")
 		print(round_records)
 		print(format_move_list())
+		game_board.get_node('Sound/bgm').stop()
+		game_board.get_node('Sound/Lose').play()
 		var win_screen = pop_up.instance()
 		win_screen.get_node('CenterContainer/Panel/VBoxContainer/Label').text = "YOU LOSE!!! Please refresh to play again."
 		win_screen.get_node("CenterContainer/Panel/HBoxContainer/StartButton").visible = false

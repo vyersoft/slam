@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://Assets/Fonts/Retro Gaming.ttf" type="DynamicFontData" id=1]
 [ext_resource path="res://Assets/Images/ssf_bg.png" type="Texture" id=2]
@@ -6,9 +6,10 @@
 [ext_resource path="res://Assets/Images/SelectSlammerButton.png" type="Texture" id=4]
 [ext_resource path="res://SelectSlammer.gd" type="Script" id=5]
 [ext_resource path="res://SelectButton.gd" type="Script" id=6]
+[ext_resource path="res://Assets/Images/Street Fights v3.png" type="Texture" id=7]
 
 [sub_resource type="DynamicFont" id=1]
-size = 48
+size = 36
 font_data = ExtResource( 1 )
 
 [node name="SelectSlammer" type="Control"]
@@ -28,15 +29,26 @@ margin_bottom = 105.0
 color = Color( 0.0784314, 0.0666667, 0.0784314, 1 )
 
 [node name="Label" type="Label" parent="TextureRect/ColorRect"]
+anchor_left = 0.5
 anchor_top = 0.5
-anchor_right = 1.0
+anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = 25.0
-margin_top = -30.5
-margin_right = -706.0
-margin_bottom = 31.5
+margin_left = -274.5
+margin_top = -31.0
+margin_right = 274.5
+margin_bottom = 31.0
 custom_fonts/font = SubResource( 1 )
 text = "SELECT A SLAMMER"
+align = 1
+valign = 1
+
+[node name="TextureRect" type="TextureRect" parent="TextureRect/ColorRect"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_right = -962.0
+texture = ExtResource( 7 )
+expand = true
+stretch_mode = 6
 
 [node name="ColorRect2" type="ColorRect" parent="TextureRect"]
 margin_top = 105.0

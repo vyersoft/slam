@@ -57,6 +57,7 @@ func _ready():
 		get_node("MomentumLabel").text = "Momentum: 7"
 
 func _pressed():
+	$"../../../../".get_node("Sound/ClickSound").play()
 	$"../../../".get_node("SelectButton").disabled = false
 	for child in $"../".get_children():
 		if child.slammer_name != slammer_name:

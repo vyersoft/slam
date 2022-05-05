@@ -15,6 +15,7 @@ func _ready():
 	Highfly_button.connect("pressed", self, "Highfly")
 
 func Powerhouz():
+	$"../".get_node("Sound/ClickSound").play()
 	game_manager.reset_hand()
 	game_manager.set_player()
 	slam_AI.set_player()
@@ -28,6 +29,7 @@ func Powerhouz():
 	queue_free()
 	
 func Highfly():
+	$"../".get_node("Sound/ClickSound").play()
 	game_manager.reset_hand()
 	game_manager.set_player()
 	slam_AI.set_player()
