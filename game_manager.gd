@@ -45,6 +45,8 @@ var alignment #defines alignment
 var slammer_name
 var matchId = ""
 var select_slammer = ""
+var slammer_stats = {}
+var slammer_names = [] 
 
 #setting the player deck
 onready var deck_list = preload("res://Assets/TempDatabase/game_deck.gd")
@@ -102,6 +104,8 @@ func select_deck(decklist):
 	
 
 func reset_hand():
+	print('reset_hand')
+	print(slammer_name)
 	for child in game_board.get_node("HandPanel/HandContainer").get_children():
 		child.queue_free()
 	player_hand.clear()
@@ -230,16 +234,16 @@ func turn_tracker(power, turn_num):
 		p2_pow = power
 
 func set_player():
-#	var select_slammer = "1611" #fixed character for the alpha.
-	slammer = slammer_data.slammer[select_slammer]
-	slammer_name = "#" + select_slammer 
-	game_board.get_node("Player/Slammer").texture = load("res://Assets/Slammers/" + str(select_slammer) + ".png")
+	print("Set_player slammer name")
+	print(slammer_name)
+	slammer = slammer_stats[slammer_name]
+	game_board.get_node("Player/Slammer").texture = load("res://Assets/Slammers/" + str(slammer_name) + ".png")
 	game_board.get_node('Player/Username').text  = slammer_name
 	print("Slammer Stats:", str(slammer))
 
 func setup():
 	fill_dialogue()
-	
+
 	resilience = slammer[0]
 	strength = slammer[1]
 	speed = slammer[2]
@@ -757,7 +761,12 @@ func set_dialogue(user, state, cap_name):
 
 func calculate_damage():
 	var damage
+	print("Slammer name")
+	print(slammer_name)
+	print("AI name")
+	print(slam_AI.slammer_name)
 	matt.set("custom_colors/font_color", Color(1,0,0))
+	
 	if player_stance == "Attack":
 		damage = player_power - slam_AI.player_power
 		if damage > 0:
@@ -771,6 +780,7 @@ func calculate_damage():
 		else:
 			matt.text = "They completely blocked each other!!!"
 	else:
+		
 		damage = slam_AI.player_power - player_power
 		if damage > 0:
 			matt.text = slammer_name + " is in pain for " + str(damage) + "!"

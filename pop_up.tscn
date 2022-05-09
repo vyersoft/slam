@@ -69,6 +69,13 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 margin_top = 71.0
 margin_bottom = -145.0
+alignment = 1
+
+[node name="CycleButton" type="Button" parent="CenterContainer/Panel/VBoxContainer"]
+visible = false
+margin_right = 200.0
+margin_bottom = 20.0
+text = "Change Leaderboard"
 
 [node name="TextureRect" type="TextureRect" parent="CenterContainer/Panel/VBoxContainer"]
 margin_right = 900.0
@@ -96,6 +103,7 @@ margin_top = 384.0
 margin_right = 900.0
 margin_bottom = 384.0
 size_flags_horizontal = 3
+alignment = 1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="CenterContainer/Panel"]
 anchor_top = 1.0

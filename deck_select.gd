@@ -4,7 +4,7 @@ extends Control
 # Declare member variables here. Examples:
 var Powerhouz_button
 var Highfly_button
-
+onready var game_manager = get_node("/root/game_manager")
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -16,6 +16,7 @@ func _ready():
 
 func Powerhouz():
 	$"../".get_node("Sound/ClickSound").play()
+	print(game_manager.slammer_name)
 	game_manager.reset_hand()
 	game_manager.set_player()
 	slam_AI.set_player()

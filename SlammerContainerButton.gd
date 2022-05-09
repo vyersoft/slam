@@ -1,7 +1,8 @@
 extends TextureButton
 
 #slammer stats
-const slammer_data = preload("res://Assets/TempDatabase/slammer_data.gd")
+#const slammer_data = preload("res://Assets/TempDatabase/slammer_data.gd")
+onready var game_manager = get_node("/root/game_manager")
 var slammer
 var resilience #defines durability
 var strength #adds atk
@@ -13,7 +14,10 @@ var slammer_name = ""
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	slammer = slammer_data.slammer[slammer_name]
+	var slammer_data = {}
+	slammer_data.slammer = game_manager.slammer_stats
+	game_manager.slammer = slammer_data.slammer[slammer_name]
+	slammer = game_manager.slammer
 	resilience = slammer[0]
 	strength = slammer[1]
 	speed = slammer[2]

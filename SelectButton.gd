@@ -19,6 +19,7 @@ func _pressed():
 		if child.pressed == true:
 			print("Highlighted: #", child.slammer_name)
 			game_manager.select_slammer = child.slammer_name
+			game_manager.slammer_name = child.slammer_name
 	var select = deck_select.instance()
 	game_board.add_child(select)
 	$"../".queue_free()
