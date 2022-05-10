@@ -94,7 +94,7 @@ margin_bottom = 369.0
 rect_min_size = Vector2( 0, 60 )
 size_flags_vertical = 6
 custom_fonts/font = SubResource( 1 )
-text = "Play VA1.1 (Alpha Launch)"
+text = "Play VA1.2 (Alpha Launch)"
 align = 1
 valign = 1
 
