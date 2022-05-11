@@ -57,6 +57,7 @@ onready var http: HTTPRequest = HTTPRequest.new()
 #for updating labels and buttons
 onready var die_label = game_board.get_node('Die/DieRoll')
 onready var finisher_button = game_board.get_node('FinisherButton')
+onready var counter_button = game_board.get_node('CounterButton')
 onready var die_face = game_board.get_node('DieFace')
 #onready var durability_bar
 #onready var momentum_bar
@@ -348,6 +349,7 @@ func check_finisher():
 			dub.text = slammer_name + " is up for a finisher!"
 			finisher_button.disabled = false
 			finisher_button.visible = true
+#			game_board.get_node("AnnouncerPanel/PanelButton").text = "Cancel"
 		else:
 			finisher_button.disabled = true
 			finisher_button.visible = false
@@ -790,6 +792,17 @@ func finisher():
 	game_board.get_node('Player/MomentumBar').value = 0
 	set_dialogue_color(1,0,0)
 	dub.text = slammer_name + " went for a finisher!"
+	
+func counter_finisher():
+	if game_board.get_node('Player/MomentumBar').value == momentum_max:
+		counter_button.visible = true
+		counter_button.disabled = false
+	else:
+		return false
+
+func full_counter():
+	game_board.get_node('Player/MomentumBar').value = 0
+	update_power("Player",25)
 
 func resolve_round():
 	print("Move:", move)
@@ -797,13 +810,14 @@ func resolve_round():
 		var die = roll_die()
 		var playcheck1 = check_played_cap("Player", die, player_stance, strength, speed)
 		var playcheck2 =check_played_cap("Opponent", die, slam_AI.player_stance, slam_AI.strength, slam_AI.speed)
-		check_finisher()
+#		check_finisher()
 #		game_board.get_node('Sound/roll').play()
 		move += 1
 		if playcheck1 == false and playcheck2 == false:
 			move = 3
 		if move == 3:
 			game_board.get_node('AnnouncerPanel/PanelButton').text = "Deal Damage"
+			check_finisher()
 			move += 1
 	elif move == 4:
 		game_board.get_node('AnnouncerPanel/PanelButton').text = "Next Round"
@@ -848,7 +862,7 @@ func start_turn(stance, turn_num):
 	print("-------------------------------------------------------------------")
 	print("Player turn starts...")
 	print("-------------------------------------------------------------------")
-	check_finisher()
+#	check_finisher()
 	turn_order = turn_num
 	success = 0
 	player_power = 0

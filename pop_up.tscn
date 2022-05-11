@@ -1,9 +1,10 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://pop_up.gd" type="Script" id=1]
 [ext_resource path="res://Assets/Images/Street Fights v3.png" type="Texture" id=2]
 [ext_resource path="res://Assets/Fonts/Retro Gaming.ttf" type="DynamicFontData" id=3]
 [ext_resource path="res://Assets/Images/ssf_bg.png" type="Texture" id=4]
+[ext_resource path="res://Assets/Images/Music.png" type="Texture" id=5]
 
 [sub_resource type="StyleBoxEmpty" id=2]
 
@@ -130,7 +131,24 @@ margin_top = -63.0
 margin_right = 42.0
 margin_bottom = -5.0
 
+[node name="HSlider" type="HSlider" parent="."]
+margin_left = 1036.0
+margin_top = 492.0
+margin_right = 1270.0
+margin_bottom = 508.0
+min_value = -30.0
+max_value = 0.0
+
+[node name="TextureRect2" type="TextureRect" parent="."]
+margin_left = 993.0
+margin_top = 480.0
+margin_right = 1031.0
+margin_bottom = 518.0
+texture = ExtResource( 5 )
+expand = true
+
 [connection signal="request_completed" from="HTTPRequest" to="." method="_on_HTTPRequest_request_completed"]
 [connection signal="pressed" from="CenterContainer/Panel/HBoxContainer/StartButton" to="." method="_on_StartButton_pressed"]
 [connection signal="pressed" from="CenterContainer/Panel/HBoxContainer/RedeemButton" to="." method="_on_RedeemButton_pressed"]
 [connection signal="ready" from="AcceptDialog" to="." method="_on_AcceptDialog_ready"]
+[connection signal="value_changed" from="HSlider" to="." method="_on_HSlider_value_changed"]

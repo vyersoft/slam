@@ -7,6 +7,10 @@ var play_button
 var select_slammer = preload('res://SelectSlammer.tscn')
 onready var game_board = get_node('/root/GameBoard/')
 
+# Volume Control
+var master_bus = AudioServer.get_bus_index("Master")
+var effect_bus = AudioServer.get_bus_index("effect")
+var effect2_bus = AudioServer.get_bus_index("effect2")
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -195,3 +199,17 @@ func _on_RedeemButton_pressed():
 
 func _on_AcceptDialog_ready():
 	pass # Replace with function body.
+
+
+func _on_HSlider_value_changed(value):
+	AudioServer.set_bus_volume_db(master_bus, value)
+	AudioServer.set_bus_volume_db(effect_bus, value)
+	AudioServer.set_bus_volume_db(effect2_bus, value)
+	if value == -30:
+		AudioServer.set_bus_mute(master_bus, true)
+		AudioServer.set_bus_mute(effect_bus, true)
+		AudioServer.set_bus_mute(effect2_bus, true)
+	else:
+		AudioServer.set_bus_mute(master_bus, false)
+		AudioServer.set_bus_mute(effect_bus, false)
+		AudioServer.set_bus_mute(effect2_bus, false)

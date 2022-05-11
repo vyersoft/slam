@@ -1,4 +1,4 @@
-[gd_scene load_steps=50 format=2]
+[gd_scene load_steps=56 format=2]
 
 [ext_resource path="res://Assets/Fonts/Retro Gaming.ttf" type="DynamicFontData" id=1]
 [ext_resource path="res://Assets/Sounds/finisher.wav" type="AudioStream" id=2]
@@ -27,6 +27,11 @@
 [ext_resource path="res://Assets/Sounds/PlayCap.wav" type="AudioStream" id=25]
 [ext_resource path="res://Assets/Sounds/Redeem.wav" type="AudioStream" id=26]
 [ext_resource path="res://Assets/Sounds/Lose.wav" type="AudioStream" id=27]
+[ext_resource path="res://Assets/Images/FinisherButton2Pressed.png" type="Texture" id=28]
+[ext_resource path="res://Assets/Images/FinisherButton2Highlight.png" type="Texture" id=29]
+[ext_resource path="res://Assets/Images/FinisherButton2Normal.png" type="Texture" id=30]
+[ext_resource path="res://CounterButton.gd" type="Script" id=31]
+[ext_resource path="res://Assets/Images/Music.png" type="Texture" id=32]
 
 [sub_resource type="StreamTexture" id=21]
 flags = 4
@@ -114,6 +119,10 @@ load_path = "res://.import/FinisherButtonPressed.png-c0c32c70144aa792b3b411c28e1
 [sub_resource type="StreamTexture" id=18]
 flags = 4
 load_path = "res://.import/FinisherButtonHighlight.png-ea6cc6eca3cdaf5fe51b6e6b1596aa04.stex"
+
+[sub_resource type="DynamicFont" id=23]
+size = 42
+font_data = ExtResource( 1 )
 
 [sub_resource type="StyleBoxEmpty" id=9]
 
@@ -729,26 +738,6 @@ text = "Powerhouz"
 align = 2
 valign = 1
 
-[node name="Die" type="ColorRect" parent="."]
-visible = false
-anchor_left = 0.466
-anchor_top = 0.028
-anchor_right = 0.534
-anchor_bottom = 0.15
-margin_left = -0.47998
-margin_top = 130.84
-margin_right = 0.47998
-margin_bottom = 131.0
-color = Color( 0.513726, 0, 0.639216, 1 )
-
-[node name="DieRoll" type="Label" parent="Die"]
-visible = false
-anchor_right = 1.0
-anchor_bottom = 1.0
-text = "##"
-align = 1
-valign = 1
-
 [node name="FinisherButton" type="TextureButton" parent="."]
 visible = false
 margin_left = 571.0
@@ -760,6 +749,25 @@ texture_normal = SubResource( 16 )
 texture_pressed = SubResource( 17 )
 texture_hover = SubResource( 18 )
 script = ExtResource( 19 )
+
+[node name="CounterButton" type="TextureButton" parent="."]
+visible = false
+margin_left = 571.0
+margin_top = 430.0
+margin_right = 971.0
+margin_bottom = 532.0
+texture_normal = ExtResource( 30 )
+texture_pressed = ExtResource( 28 )
+texture_hover = ExtResource( 29 )
+script = ExtResource( 31 )
+
+[node name="Label" type="Label" parent="CounterButton"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_fonts/font = SubResource( 23 )
+text = "COUNTER"
+align = 1
+valign = 1
 
 [node name="Timer" type="Panel" parent="."]
 visible = false
@@ -867,4 +875,21 @@ volume_db = 5.0
 [node name="Lose" type="AudioStreamPlayer" parent="Sound"]
 stream = ExtResource( 27 )
 
+[node name="VSlider" type="VSlider" parent="."]
+margin_left = 1254.0
+margin_top = 243.0
+margin_right = 1270.0
+margin_bottom = 382.0
+min_value = -30.0
+max_value = 0.0
+
+[node name="TextureRect" type="TextureRect" parent="."]
+margin_left = 1243.0
+margin_top = 374.0
+margin_right = 1281.0
+margin_bottom = 412.0
+texture = ExtResource( 32 )
+expand = true
+
 [connection signal="request_completed" from="HTTPRequest" to="." method="_on_HTTPRequest_request_completed"]
+[connection signal="value_changed" from="VSlider" to="." method="_on_VSlider_value_changed"]
