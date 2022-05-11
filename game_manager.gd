@@ -19,7 +19,8 @@ var round_record = {}
 #	player_damage: number,
 #	ai_damage: number
 # }
-
+var on_offense
+var on_defense 
 var player_stance
 var player_power 
 var player_move = 3
@@ -122,6 +123,7 @@ func set_turns():
 		player_1 = game_board.get_node('/root/slam_AI/')
 		player_2 = game_board.get_node('/root/game_manager/')
 		print("Attacker: AI")
+	
 
 
 func _on_http_request_completed(result, response_code, headers, body):
@@ -242,7 +244,7 @@ func set_player():
 	print("Slammer Stats:", str(slammer))
 
 func setup():
-	fill_dialogue()
+	
 
 	resilience = slammer[0]
 	strength = slammer[1]
@@ -403,9 +405,19 @@ func check_played_cap(user, die, stance, user_strenght, user_speed):
 		var Player_cap = game_board.get_node(str(user) + '/PlayContainer').get_child(move)
 		Player_cap.disabled = false
 		var power = calculate_power(die, Player_cap.cap_info, stance, user_strenght, user_speed)
+
+		
+		
 		if power == 0:
 			record_move(user, Player_cap.cap, "Miss",stance)
-			set_dialogue(user, "Miss", Player_cap.cap)
+
+			if stance =="Attack":
+				if user == "Player":
+					fill_dialogue("#"+slammer_name, slam_AI.slammer_name)
+				else:
+					fill_dialogue(slam_AI.slammer_name, "#"+slammer_name)
+				set_dialogue(user, "Miss", Player_cap.cap)
+				
 			game_board.get_node('Sound/miss').play()
 			Player_cap.pressed = true
 #			game_board.get_node('AnnouncerPanel/Speech1/Text').text = str(commentary.Miss[Player_cap.cap])
@@ -418,7 +430,13 @@ func check_played_cap(user, die, stance, user_strenght, user_speed):
 			record_move(user, Player_cap.cap, "Hit",stance)
 			update_momentum(user)
 			update_power(user, power)
-			set_dialogue(user, "Hit", Player_cap.cap)
+			if stance =="Attack":
+				if user == "Player":
+					fill_dialogue("#"+slammer_name, slam_AI.slammer_name)
+				else:
+					fill_dialogue(slam_AI.slammer_name, "#"+slammer_name)
+		
+				set_dialogue(user, "Hit", Player_cap.cap)
 			game_board.get_node('Sound/hit').play()
 	else:
 #		set_dialogue_color(1,1,1)
@@ -427,160 +445,160 @@ func check_played_cap(user, die, stance, user_strenght, user_speed):
 		return false
 
 
-func fill_dialogue():
+func fill_dialogue(attacker, defender):
 	Hit = {
 	#Powerhouz
 		"Vertical Suplex Powerbomb": 
 			[
-				slammer_name + " Just went nuclear on "+ slam_AI.slammer_name + " with a Vertical Suplex Powerbomb!", 
-				"I don't think "+ slam_AI.slammer_name + " is getting up after that..."
+				attacker + " Just went nuclear on "+ defender + " with a Vertical Suplex Powerbomb!", 
+				"I don't think "+ defender + " is getting up after that..."
 			],
 		"Gorilla Press Drop":
 			[
-				slammer_name + " Has "+ slam_AI.slammer_name + " lifted up above him for a Gorilla Press Drop!",
-				slam_AI.slammer_name + " Was not expecting a drop like that!"
+				attacker + " Has "+ defender + " lifted up above him for a Gorilla Press Drop!",
+				defender + " Was not expecting a drop like that!"
 			],
 		"Double Underhook Power Bomb":
 			[
-				slammer_name + " has "+ slam_AI.slammer_name + " locked! And lands a Double Underhook Power Bomb!",
-				"No way "+ slam_AI.slammer_name + " gets up after that crushing blow!"
+				attacker + " has "+ defender + " locked! And lands a Double Underhook Power Bomb!",
+				"No way "+ defender + " gets up after that crushing blow!"
 			],
 		"Powerbomb": 
 			[
-				slammer_name + " Launches and slams "+ slam_AI.slammer_name + " with a Powerbomb!",
-				slam_AI.slammer_name + " Is seeing stars!"
+				attacker + " Launches and slams "+ defender + " with a Powerbomb!",
+				defender + " Is seeing stars!"
 			],
 		"Superplex": 
 			[
-				"Superplex! " + slammer_name + " Absolutely stuns "+ slam_AI.slammer_name+"!",
-				"Oh "+ slam_AI.slammer_name + " is not looking good after that!"
+				"Superplex! " + attacker + " Absolutely stuns "+ defender+"!",
+				"Oh "+ defender + " is not looking good after that!"
 			],
 		"Full Nelson": 
 			[
-				slammer_name + " Snuck behind "+ slam_AI.slammer_name + " and put him into a Full Nelson!",
-				slam_AI.slammer_name + " Is not looking comfortable!"
+				attacker + " Snuck behind "+ defender + " and put him into a Full Nelson!",
+				defender + " Is not looking comfortable!"
 			],
 		"Hammerlock": 
 			[
-				slammer_name + " Has the arm of "+ slam_AI.slammer_name + " behind his back in a Hammerlock!",
-				slam_AI.slammer_name + "'s arm is looking like a lost cause!"
+				attacker + " Has the arm of "+ defender + " behind his back in a Hammerlock!",
+				defender + "'s arm is looking like a lost cause!"
 			],
 		"Ground and Pound": 
 			[
-				"Whoa! " + slammer_name + " is cookin' with that Ground & Pound on "+ slam_AI.slammer_name+"", 
-				slam_AI.slammer_name + " Is gonna be chop liver after that!"
+				"Whoa! " + attacker + " is cookin' with that Ground & Pound on "+ defender+"", 
+				defender + " Is gonna be chop liver after that!"
 			],
 		"Neck Breaker": 
 			[
-				"Oh no it's a Neck Breaker on "+ slam_AI.slammer_name+"!",
-				slammer_name + " Is ruthless in the streets!"
+				"Oh no it's a Neck Breaker on "+ defender+"!",
+				attacker + " Is ruthless in the streets!"
 			],
 		"Body Lock": 
 			[
-				"And just like that " + slammer_name + "has strong armed "+ slam_AI.slammer_name + " into a Body Lock",
-				slam_AI.slammer_name + " Is going nowhere fast!"
+				"And just like that " + attacker + "has strong armed "+ defender + " into a Body Lock",
+				defender + " Is going nowhere fast!"
 			],
 		"Choke Hold": 
 			[
-				"Oh no! " + slammer_name + " has the neck of "+ slam_AI.slammer_name + " in a vicious Choke Hold",
-				"I think "+ slam_AI.slammer_name + " is starting to turn purple!"
+				"Oh no! " + attacker + " has the neck of "+ defender + " in a vicious Choke Hold",
+				"I think "+ defender + " is starting to turn purple!"
 			],
 		"Shoulder Block": 
 			[
-				"Grabbing "+ slam_AI.slammer_name+"'s arm, " + slammer_name + " goes for an Armbar Leg Sweep attempt!",
-				slam_AI.slammer_name + " Was just flattened like a pancake!"
+				"Grabbing "+ defender+"'s arm, " + attacker + " goes for an Armbar Leg Sweep attempt!",
+				defender + " Was just flattened like a pancake!"
 			],
 		"Bear Hug": 
 			[
-				slammer_name + " Has "+ slam_AI.slammer_name + " in a vicious bear hug!",
+				attacker + " Has "+ defender + " in a vicious bear hug!",
 				"He's literally squeezing the life out of him!"
 			],
 		"Arm Bar Takedown": 
 			[
-				"Ouch! " + slammer_name + "secured the Arm Bar Takedown on "+ slam_AI.slammer_name+"!",
-				"How fast is  " + slammer_name + "?!?"
+				"Ouch! " + attacker + "secured the Arm Bar Takedown on "+ defender+"!",
+				"How fast is  " + attacker + "?!?"
 			],
 		"Waist Lock": 
 			[
-				"Whoa! That's a tight waist lock " + slammer_name + "has on "+ slam_AI.slammer_name,
-				"Those ribs gotta be hurting for "+ slam_AI.slammer_name
+				"Whoa! That's a tight waist lock " + attacker + "has on "+ defender,
+				"Those ribs gotta be hurting for "+ defender
 			],
 			
 	#High Fly
 		"Pheonix Splash":
 				[
-				slammer_name + " just landed a majestic Phoenix Splash on " + slam_AI.slammer_name + "!",
-				slammer_name + "'s skill set is so rare and so pro!"
+				attacker + " just landed a majestic Phoenix Splash on " + defender + "!",
+				attacker + "'s skill set is so rare and so pro!"
 			],
 		"540 Spanish Fly":
 			[
-				"From high up! " + slammer_name + " grabs " + slam_AI.slammer_name + " and pulls him into a Spanish Fly",
-				slam_AI.slammer_name + " Just got swatted!"
+				"From high up! " + attacker + " grabs " + defender + " and pulls him into a Spanish Fly",
+				defender + " Just got swatted!"
 			],
 		"Flipping Mule Kick":
 			[
-				slammer_name + " knocks back " + slam_AI.slammer_name + " with a Flipping Mule Kick!",
-				slam_AI.slammer_name + " charged into that one face first!"
+				attacker + " knocks back " + defender + " with a Flipping Mule Kick!",
+				defender + " charged into that one face first!"
 			],
 		"Blockbuster":
 			[
-				slammer_name + " flies over [P2 ] connecting a Blockbuster!",
-				"That's going to be hard to recover from for " + slam_AI.slammer_name + "!"
+				attacker + " flies over [P2 ] connecting a Blockbuster!",
+				"That's going to be hard to recover from for " + defender + "!"
 			],
 		"Enziguris":
 			[
-				"Out of nowhere " + slammer_name + " catches " + slam_AI.slammer_name + " with a surprise Enziguris! ",
-				slammer_name + "'s foot connected directly to " + slam_AI.slammer_name + "'s face!"
+				"Out of nowhere " + attacker + " catches " + defender + " with a surprise Enziguris! ",
+				attacker + "'s foot connected directly to " + defender + "'s face!"
 			],
 		"Flying Dropkick":
 			[
-				"How did " + slammer_name + " just pull off a Flying Dropkick on " + slam_AI.slammer_name + "!?!?",
+				"How did " + attacker + " just pull off a Flying Dropkick on " + defender + "!?!?",
 				"A crazy mix of skill and luck is all I can think of!"
 			],
 		"Laser Moonsault":
 			[
-				"With stunning precision " + slammer_name + " lands a Laser Moonsault on " + slam_AI.slammer_name,
-				slam_AI.slammer_name + " had no clue that was coming!"
+				"With stunning precision " + attacker + " lands a Laser Moonsault on " + defender,
+				defender + " had no clue that was coming!"
 			],
 		"Backflip Kick":
 			[
-				"Backflip Kick! " + slammer_name + " stuns " + slam_AI.slammer_name + " with that kick!",
-				"What stunning agility " + slammer_name + " posesses!"
+				"Backflip Kick! " + attacker + " stuns " + defender + " with that kick!",
+				"What stunning agility " + attacker + " posesses!"
 			],
 		"Jaw Jammer":
 			[
-				slammer_name + " has " + slam_AI.slammer_name + " around the neck in a Jaw Jammer",
-				slam_AI.slammer_name + " is gonna be eating from a straw!"
+				attacker + " has " + defender + " around the neck in a Jaw Jammer",
+				defender + " is gonna be eating from a straw!"
 			],
 		"Splash":
 			[
-				slammer_name + " soars into the sky for a Splash on " + slam_AI.slammer_name + "!",
-				"Watch out in the Splash zone! " + slam_AI.slammer_name + " got crushed!"
+				attacker + " soars into the sky for a Splash on " + defender + "!",
+				"Watch out in the Splash zone! " + defender + " got crushed!"
 			],
 		"Spinning Heel Kick":
 			[
-				"Turning around " + slammer_name + " catches " + slam_AI.slammer_name + " with a Spinning Heel Kick",
-				"Oh my! " + slam_AI.slammer_name + " dropped like a rock after that connected!"
+				"Turning around " + attacker + " catches " + defender + " with a Spinning Heel Kick",
+				"Oh my! " + defender + " dropped like a rock after that connected!"
 			],
 		"Catapult":
 			[
-				slammer_name + " Just sent " + slam_AI.slammer_name + " to the moon with that Catapult!",
-				"Whoa! " + slam_AI.slammer_name + " is in orbit!"
+				attacker + " Just sent " + defender + " to the moon with that Catapult!",
+				"Whoa! " + defender + " is in orbit!"
 			],
 		"Armbar Leg Sweep":
 			[
-				slammer_name + " puts " + slam_AI.slammer_name + " right to the ground with an Armbar Leg Sweep",
-				slam_AI.slammer_name + " has got to be hurting all over now!"
+				attacker + " puts " + defender + " right to the ground with an Armbar Leg Sweep",
+				defender + " has got to be hurting all over now!"
 			],
 		"Spinning Kick":
 			[
-				slam_AI.slammer_name + " just got walloped by a Spinning Kick from " + slammer_name,
-				"It's looking like the lights are out for " + slam_AI.slammer_name
+				defender + " just got walloped by a Spinning Kick from " + attacker,
+				"It's looking like the lights are out for " + defender
 			],
 		"Hip Toss":
 			[
-				slammer_name + " easily throws " + slam_AI.slammer_name + " to the ground with a Hip Toss!",
-				slam_AI.slammer_name + " should just stay down!"
+				attacker + " easily throws " + defender + " to the ground with a Hip Toss!",
+				defender + " should just stay down!"
 			],
 
 	}
@@ -588,176 +606,176 @@ func fill_dialogue():
 	#Powerhouz
 		"Vertical Suplex Powerbomb": 
 			[
-				slammer_name + " Muscles "+ slam_AI.slammer_name + " into position for a Vertical Suplex Powerbomb", 
-				"But "+ slam_AI.slammer_name + " breaks free! "
+				attacker + " Muscles "+ defender + " into position for a Vertical Suplex Powerbomb", 
+				"But "+ defender + " breaks free! "
 			],
 		"Gorilla Press Drop":
 			[
-				slammer_name + " Is lifting "+ slam_AI.slammer_name + " above his head for a Gorilla Press Drop! ",
-				slammer_name + " Doesn't have enough juice and "+ slam_AI.slammer_name + " escapes!"
+				attacker + " Is lifting "+ defender + " above his head for a Gorilla Press Drop! ",
+				attacker + " Doesn't have enough juice and "+ defender + " escapes!"
 			],
 		"Double Underhook Power Bomb":
 			[
-				slammer_name + " Locks up "+ slam_AI.slammer_name + " for a Double Underhook Power Bomb!",
-				"But "+ slam_AI.slammer_name + " slips out of  " + slammer_name + "'s hooks!"
+				attacker + " Locks up "+ defender + " for a Double Underhook Power Bomb!",
+				"But "+ defender + " slips out of  " + attacker + "'s hooks!"
 			],
 		"Powerbomb": 
 			[
-				slammer_name + " Is trying to Powerbomb "+ slam_AI.slammer_name+"!",
-				"But "+ slam_AI.slammer_name + " is glued to the floor and going nowhere!"
+				attacker + " Is trying to Powerbomb "+ defender+"!",
+				"But "+ defender + " is glued to the floor and going nowhere!"
 			],
 		"Superplex": 
 			[
-				"Looks like " + slammer_name + " is going for a Superplex on "+ slam_AI.slammer_name+"!",
-				"But "+ slam_AI.slammer_name + " reverses and takes the advantage!"
+				"Looks like " + attacker + " is going for a Superplex on "+ defender+"!",
+				"But "+ defender + " reverses and takes the advantage!"
 			],
 		"Full Nelson": 
 			[
-				slammer_name + " Is behind "+ slam_AI.slammer_name + " trying to get him into a Full Nelson",
-				slam_AI.slammer_name + " Is too strong for " + slammer_name + ", and won't allow it!"
+				attacker + " Is behind "+ defender + " trying to get him into a Full Nelson",
+				defender + " Is too strong for " + attacker + ", and won't allow it!"
 			],
 		"Hammerlock": 
 			[
-				slammer_name + " Grabs "+ slam_AI.slammer_name+"'s arm and goes for a Hammerlock!",
-				slam_AI.slammer_name + " Twists and turns his way out of it!"
+				attacker + " Grabs "+ defender+"'s arm and goes for a Hammerlock!",
+				defender + " Twists and turns his way out of it!"
 			],
 		"Ground and Pound": 
 			[
-				slammer_name + " Get's on top of "+ slam_AI.slammer_name + " for a Ground & Pound!", 
-				"But "+ slam_AI.slammer_name + " throws " + slammer_name + " right off of him!"
+				attacker + " Get's on top of "+ defender + " for a Ground & Pound!", 
+				"But "+ defender + " throws " + attacker + " right off of him!"
 			],
 		"Neck Breaker": 
 			[
-				slammer_name + " Is trying get serious with a Neck Break on "+ slam_AI.slammer_name+"!",
-				"But "+ slam_AI.slammer_name + " is making  " + slammer_name + "'s attempt look silly!"
+				attacker + " Is trying get serious with a Neck Break on "+ defender+"!",
+				"But "+ defender + " is making  " + attacker + "'s attempt look silly!"
 			],
 		"Body Lock": 
 			[
-				slammer_name + " Grabs  " + slam_AI.slammer_name + " for an apparent Body Lock",
-				slam_AI.slammer_name + " Is having none of it and breaks that weak Body Lock!"
+				attacker + " Grabs  " + defender + " for an apparent Body Lock",
+				defender + " Is having none of it and breaks that weak Body Lock!"
 			],
 		"Choke Hold": 
 			[
-				slammer_name + " Grabs "+ slam_AI.slammer_name + " by the neck in a Choke Hold",
-				slam_AI.slammer_name + " Breaks the hold by " + slammer_name + "with ease!"
+				attacker + " Grabs "+ defender + " by the neck in a Choke Hold",
+				defender + " Breaks the hold by " + attacker + "with ease!"
 			],
 		"Shoulder Block": 
 			[
-				slammer_name + " Running straight for "+ slam_AI.slammer_name + " it looks like a Shoulder Block!",
-				slammer_name + " Just hit a brick wall and did more damage to himself!"
+				attacker + " Running straight for "+ defender + " it looks like a Shoulder Block!",
+				attacker + " Just hit a brick wall and did more damage to himself!"
 			],
 		"Bear Hug": 
 			[
-				"Oh, " + slammer_name + "Goes for a Bear Hug",
-				"But "+ slam_AI.slammer_name + " is too fast for him this time!"
+				"Oh, " + attacker + "Goes for a Bear Hug",
+				"But "+ defender + " is too fast for him this time!"
 			],
 		"Arm Bar Takedown": 
 			[
-				"Why would " + slammer_name + "go for an Arm Bar Takedown on "+ slam_AI.slammer_name + " right now?",
-				"They say play the odds around here "+ slam_AI.slammer_name + " has to keep taking his shots!"
+				"Why would " + attacker + "go for an Arm Bar Takedown on "+ defender + " right now?",
+				"They say play the odds around here "+ defender + " has to keep taking his shots!"
 			],
 		"Waist Lock": 
 			[
-				slammer_name + " 's connects around "+ slam_AI.slammer_name + " for a waist lock ",
-				"Oh no! " + slammer_name + " doesn't have enough to hold " + slam_AI.slammer_name
+				attacker + " 's connects around "+ defender + " for a waist lock ",
+				"Oh no! " + attacker + " doesn't have enough to hold " + defender
 			],
 			
 	#High Fly
 		"Pheonix Splash":
 				[
-				slammer_name + " jumps, spins and flips for a Pheonix Splash " + slam_AI.slammer_name,
-				"But " + slam_AI.slammer_name + " rolls away just in time to miss it!"
+				attacker + " jumps, spins and flips for a Pheonix Splash " + defender,
+				"But " + defender + " rolls away just in time to miss it!"
 			],
 		"540 Spanish Fly":
 			[
-				"Looks like " + slammer_name + " is grabbing " + slam_AI.slammer_name + " for Spanish Fly",
-				slam_AI.slammer_name + " Just won't budge! Humiliating for " + slammer_name + "."
+				"Looks like " + attacker + " is grabbing " + defender + " for Spanish Fly",
+				defender + " Just won't budge! Humiliating for " + attacker + "."
 			],
 		"Flipping Mule Kick":
 			[
-				slammer_name + " takes a shot at a Flipping Mule Kick.",
-				"But " + slammer_name + " trips over himself and misses!"
+				attacker + " takes a shot at a Flipping Mule Kick.",
+				"But " + attacker + " trips over himself and misses!"
 			],
 		"Blockbuster":
 			[
-				slammer_name + " leaps for a Blockbuster on " + slam_AI.slammer_name + "!",
-				slam_AI.slammer_name + " ducks the move just in time! Will " + slammer_name + " land that attempt? "
+				attacker + " leaps for a Blockbuster on " + defender + "!",
+				defender + " ducks the move just in time! Will " + attacker + " land that attempt? "
 			],
 		"Enziguris":
 			[
-				"And " + slammer_name + " goes for a wild Enziguris!",
-				"But " + slam_AI.slammer_name + " is too fast and evades " + slammer_name + "'s foot!"
+				"And " + attacker + " goes for a wild Enziguris!",
+				"But " + defender + " is too fast and evades " + attacker + "'s foot!"
 			],
 		"Flying Dropkick":
 			[
-				"Is " + slammer_name + " going for the Flying Dropkick!?!?",
-				slam_AI.slammer_name + " was too quick and took the advantage! "
+				"Is " + attacker + " going for the Flying Dropkick!?!?",
+				defender + " was too quick and took the advantage! "
 			],
 		"Laser Moonsault":
 			[
-				"Is that " + slammer_name + " flying into the air for a Laser Moonsault!?!?",
-				"But " + slam_AI.slammer_name + " rolls out of the way just in time!"
+				"Is that " + attacker + " flying into the air for a Laser Moonsault!?!?",
+				"But " + defender + " rolls out of the way just in time!"
 			],
 		"Backflip Kick":
 			[
-				slammer_name + " goes flying for a Backflip Kick on " + slam_AI.slammer_name + ".",
+				attacker + " goes flying for a Backflip Kick on " + defender + ".",
 				"But lands right on his face! What a whiff!"
 			],
 		"Jaw Jammer":
 			[
-				slammer_name + " is grabbing " + slam_AI.slammer_name + " in a Jaw Jammer hold!?!?",
-				"But " + slam_AI.slammer_name + " slips right of it!"
+				attacker + " is grabbing " + defender + " in a Jaw Jammer hold!?!?",
+				"But " + defender + " slips right of it!"
 			],
 		"Splash":
 			[
-				"Flying into the air. " + slammer_name + " is looking to do a Splash on " + slam_AI.slammer_name + ".",
-				slam_AI.slammer_name + " catches him mid-air and stops the attempt!"
+				"Flying into the air. " + attacker + " is looking to do a Splash on " + defender + ".",
+				defender + " catches him mid-air and stops the attempt!"
 			],
 		"Spinning Heel Kick":
 			[
-				"Looks like " + slammer_name + " is going for a Spinning Heel Kick on " + slam_AI.slammer_name + ".",
-				"But " + slam_AI.slammer_name + " steps back and dodges the foot of " + slammer_name + "!"
+				"Looks like " + attacker + " is going for a Spinning Heel Kick on " + defender + ".",
+				"But " + defender + " steps back and dodges the foot of " + attacker + "!"
 			],
 		"Catapult":
 			[
-				"Is " + slammer_name + " trying to launch " + slam_AI.slammer_name + " with a Catapult!?!?",
-				slam_AI.slammer_name + " is standing firm and won't budge!"
+				"Is " + attacker + " trying to launch " + defender + " with a Catapult!?!?",
+				defender + " is standing firm and won't budge!"
 			],
 		"Armbar Leg Sweep":
 			[
-				slammer_name + " grabs " + slam_AI.slammer_name + "'s arm for an Armbar Leg Sweep attempt!",
-				"But " + slam_AI.slammer_name + " didn't even miss a step!"
+				attacker + " grabs " + defender + "'s arm for an Armbar Leg Sweep attempt!",
+				"But " + defender + " didn't even miss a step!"
 			],
 		"Spinning Kick":
 			[
-				slammer_name + " launches in the air for a Spinning Kick on " + slam_AI.slammer_name + "!",
-				slammer_name + " missed by a mile!"
+				attacker + " launches in the air for a Spinning Kick on " + defender + "!",
+				attacker + " missed by a mile!"
 			],
 		"Hip Toss":
 			[
-				slammer_name + " awkwardly grabs " + slam_AI.slammer_name + " in maybe a Hip Toss attempt?",
-				slammer_name + " needs to work on his fundamentals..."
+				attacker + " awkwardly grabs " + defender + " in maybe a Hip Toss attempt?",
+				attacker + " needs to work on his fundamentals..."
 			],
 
 	}	
-	
+		
 func set_dialogue_color(a,b,c):
 	dub.set("custom_colors/font_color", Color(a,b,c))
 	matt.set("custom_colors/font_color", Color(a,b,c))
 
 
 func set_dialogue(user, state, cap_name):
-	if user == "Player":
-		if state == "Hit":
-			set_dialogue_color(1,1,1)
-			var dialogue = Hit[cap_name]
-			dub.text = dialogue[0]
-			matt.text = dialogue[1]
-		else:
-			set_dialogue_color(1,0,0)
-			var dialogue = Miss[cap_name]
-			dub.text = dialogue[0]
-			matt.text = dialogue[1]
+	
+	if state == "Hit":
+		set_dialogue_color(1,1,1)
+		var dialogue = Hit[cap_name]
+		dub.text = dialogue[0]
+		matt.text = dialogue[1]
+	else:
+		set_dialogue_color(1,0,0)
+		var dialogue = Miss[cap_name]
+		dub.text = dialogue[0]
+		matt.text = dialogue[1]
 
 func calculate_damage():
 	var damage
