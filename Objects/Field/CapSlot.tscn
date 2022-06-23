@@ -1,0 +1,14 @@
+[gd_scene format=2]
+
+[node name="CapSlot" type="MarginContainer"]
+margin_right = 120.0
+margin_bottom = 120.0
+custom_constants/margin_right = 120
+custom_constants/margin_top = 120
+
+[node name="Sprite" type="Sprite" parent="."]
+
+[node name="ColorRect" type="ColorRect" parent="Sprite"]
+margin_right = 120.0
+margin_bottom = 120.0
+color = Color( 1, 1, 1, 0 )

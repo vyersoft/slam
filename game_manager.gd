@@ -60,6 +60,7 @@ onready var http: HTTPRequest = HTTPRequest.new()
 #for updating labels and buttons
 onready var die_label = game_board.get_node('Die/DieRoll')
 onready var finisher_button = game_board.get_node('FinisherButton')
+onready var counter_button = game_board.get_node('CounterButton')
 onready var die_face = game_board.get_node('DieFace')
 #onready var durability_bar
 #onready var momentum_bar
@@ -224,7 +225,7 @@ func round_start():
 			
 	set_dialogue_color(1,1,1)
 	dub.text = "It's Round " + str(round_n)
-	matt.text = slammer_name + " is on the " + player_stance + "!"
+	matt.text = "#"+slammer_name + " is on the " + player_stance + "!"
 	game_board.get_node('Player/Slammer/Stance').texture = load("res://Assets/Images/" + player_stance + ".png")
 	game_board.get_node('Opponent/Slammer/Stance').texture = load("res://Assets/Images/" + slam_AI.player_stance + ".png")
 
@@ -240,7 +241,7 @@ func set_player():
 	print(slammer_name)
 	slammer = slammer_stats[slammer_name]
 	game_board.get_node("Player/Slammer").texture = load("res://Assets/Slammers/" + str(slammer_name) + ".png")
-	game_board.get_node('Player/Username').text  = slammer_name
+	game_board.get_node('Player/Username').text  = "#"+slammer_name
 	print("Slammer Stats:", str(slammer))
 
 func setup():
@@ -351,9 +352,10 @@ func check_finisher():
 	if game_board.get_node('Player/MomentumBar').value == momentum_max:
 		if player_stance == "Attack" and success == 3:
 			set_dialogue_color(1,0,0)
-			dub.text = slammer_name + " is up for a finisher!"
+			dub.text = "#"+slammer_name + " is up for a finisher!"
 			finisher_button.disabled = false
 			finisher_button.visible = true
+#			game_board.get_node("AnnouncerPanel/PanelButton").text = "Cancel"
 		else:
 			finisher_button.disabled = true
 			finisher_button.visible = false
@@ -515,12 +517,12 @@ func fill_dialogue(attacker, defender):
 			],
 		"Arm Bar Takedown": 
 			[
-				"Ouch! " + attacker + "secured the Arm Bar Takedown on "+ defender+"!",
+				"Ouch! " + attacker + " secured the Arm Bar Takedown on "+ defender+"!",
 				"How fast is  " + attacker + "?!?"
 			],
 		"Waist Lock": 
 			[
-				"Whoa! That's a tight waist lock " + attacker + "has on "+ defender,
+				"Whoa! That's a tight waist lock " + attacker + " has on "+ defender,
 				"Those ribs gotta be hurting for "+ defender
 			],
 			
@@ -788,11 +790,11 @@ func calculate_damage():
 	if player_stance == "Attack":
 		damage = player_power - slam_AI.player_power
 		if damage > 0:
-			matt.text = slammer_name + " is dealing " + str(damage) + " damage to " + slam_AI.slammer_name + "!"
+			matt.text = "#"+slammer_name + " is dealing " + str(damage) + " damage to " + slam_AI.slammer_name + "!"
 			update_durability("Opponent", damage)
 			game_board.get_node('Sound/cheer').play()
 		elif damage < 0:
-			matt.text = slammer_name + " is getting hit for " + str(abs(damage)) + "!"
+			matt.text = "#"+ slammer_name + " is getting hit for " + str(abs(damage)) + "!"
 			update_durability("Player", damage)
 			game_board.get_node('Sound/cheer').play()
 		else:
@@ -801,11 +803,11 @@ func calculate_damage():
 		
 		damage = slam_AI.player_power - player_power
 		if damage > 0:
-			matt.text = slammer_name + " is in pain for " + str(damage) + "!"
+			matt.text = "#"+slammer_name + " is in pain for " + str(damage) + "!"
 			update_durability("Player", damage)
 			game_board.get_node('Sound/cheer').play()
 		elif damage < 0:
-			matt.text = slammer_name + " is hitting for " + str(abs(damage)) + "!"
+			matt.text = "#"+slammer_name + " is hitting for " + str(abs(damage)) + "!"
 			update_durability("Opponent", damage)
 			game_board.get_node('Sound/cheer').play()
 		else:
@@ -817,7 +819,18 @@ func finisher():
 	slam_AI.full_counter()
 	game_board.get_node('Player/MomentumBar').value = 0
 	set_dialogue_color(1,0,0)
-	dub.text = slammer_name + " went for a finisher!"
+	dub.text = "#"+slammer_name + " went for a finisher!"
+	
+func counter_finisher():
+	if game_board.get_node('Player/MomentumBar').value == momentum_max:
+		counter_button.visible = true
+		counter_button.disabled = false
+	else:
+		return false
+
+func full_counter():
+	game_board.get_node('Player/MomentumBar').value = 0
+	update_power("Player",25)
 
 func resolve_round():
 	print("Move:", move)
@@ -825,13 +838,14 @@ func resolve_round():
 		var die = roll_die()
 		var playcheck1 = check_played_cap("Player", die, player_stance, strength, speed)
 		var playcheck2 =check_played_cap("Opponent", die, slam_AI.player_stance, slam_AI.strength, slam_AI.speed)
-		check_finisher()
+#		check_finisher()
 #		game_board.get_node('Sound/roll').play()
 		move += 1
 		if playcheck1 == false and playcheck2 == false:
 			move = 3
 		if move == 3:
 			game_board.get_node('AnnouncerPanel/PanelButton').text = "Deal Damage"
+			check_finisher()
 			move += 1
 	elif move == 4:
 		game_board.get_node('AnnouncerPanel/PanelButton').text = "Next Round"
@@ -840,7 +854,7 @@ func resolve_round():
 		if player_power == 0 and slam_AI.player_power == 0:
 			dub.text = "No one is landing anything."
 		else:
-			dub.text = slammer_name + " Hits for ".format({"username" :username})+ str(player_power) + ", while "+ slam_AI.slammer_name+" did " + str(slam_AI.player_power) + "."
+			dub.text = "#"+slammer_name + " Hits for ".format({"username" :username})+ str(player_power) + ", while "+ slam_AI.slammer_name+" did " + str(slam_AI.player_power) + "."
 		print("Player Power:", player_power)
 		print("AI Power:", slam_AI.player_power)
 		print("Player HP:", game_board.get_node('Player/DurabilityBar').value)
@@ -876,7 +890,7 @@ func start_turn(stance, turn_num):
 	print("-------------------------------------------------------------------")
 	print("Player turn starts...")
 	print("-------------------------------------------------------------------")
-	check_finisher()
+#	check_finisher()
 	turn_order = turn_num
 	success = 0
 	player_power = 0

@@ -1,15 +1,9 @@
 extends Control
-#var player_1
-#var player_2
-#var round_n = 0
-#var p1_pow = 0
-#var p2_pow = 0
-#
-#onready var hand_container = get_node("HandPanel/HandContainer")
-#onready var player_played = get_node("Player/PlayContainer")
-#onready var player_durability = get_node("Player/DurabilityBar")
-#onready var opponent_played = get_node("Opponent/PlayContainer")
-#onready var opponent_durability = get_node("Opponent/DurabilityBar")
+
+var master_bus = AudioServer.get_bus_index("Master")
+var effect_bus = AudioServer.get_bus_index("effect")
+var effect2_bus = AudioServer.get_bus_index("effect2")
+
 
 var pop_up = preload('res://pop_up.tscn')
 
@@ -19,10 +13,15 @@ func _ready():
 	var splash = pop_up.instance()
 	add_child(splash)
 
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
-
-
- # Replace with function body.
+func _on_VSlider_value_changed(value):
+	AudioServer.set_bus_volume_db(master_bus, value)
+	AudioServer.set_bus_volume_db(effect_bus, value)
+	AudioServer.set_bus_volume_db(effect2_bus, value)
+	if value == -30:
+		AudioServer.set_bus_mute(master_bus, true)
+		AudioServer.set_bus_mute(effect_bus, true)
+		AudioServer.set_bus_mute(effect2_bus, true)
+	else:
+		AudioServer.set_bus_mute(master_bus, false)
+		AudioServer.set_bus_mute(effect_bus, false)
+		AudioServer.set_bus_mute(effect2_bus, false)

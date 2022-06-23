@@ -1,0 +1,40 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://Assets/Slammers/0130.png" type="Texture" id=1]
+[ext_resource path="res://UI/Bar.tscn" type="PackedScene" id=2]
+[ext_resource path="res://UI/Momentum.tscn" type="PackedScene" id=3]
+[ext_resource path="res://Objects/Enemy/enemySlammer.gd" type="Script" id=4]
+
+[node name="Enemy" type="MarginContainer"]
+margin_right = 396.0
+margin_bottom = 101.0
+script = ExtResource( 4 )
+
+[node name="Sprite" type="Sprite" parent="."]
+position = Vector2( 52, 280 )
+texture = ExtResource( 1 )
+centered = false
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+margin_right = 396.0
+margin_bottom = 201.0
+
+[node name="Momentum" parent="VBoxContainer" instance=ExtResource( 3 )]
+margin_right = 396.0
+alignment = 2
+
+[node name="Health" parent="VBoxContainer" instance=ExtResource( 2 )]
+margin_top = 44.0
+margin_right = 396.0
+margin_bottom = 97.0
+alignment = 2
+
+[node name="ImageContainer" type="MarginContainer" parent="VBoxContainer"]
+margin_top = 101.0
+margin_right = 396.0
+margin_bottom = 201.0
+rect_min_size = Vector2( 100, 100 )
+
+[node name="Shake" type="Tween" parent="."]
+
+[connection signal="tween_completed" from="Shake" to="." method="_on_Shake_tween_completed"]

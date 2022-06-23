@@ -11,6 +11,12 @@ onready var game_manager = get_node("/root/game_manager")
 var leaderboards = []
 var current_LB_index = 1
 var LB_max_index = 1
+
+# Volume Control
+var master_bus = AudioServer.get_bus_index("Master")
+var effect_bus = AudioServer.get_bus_index("effect")
+var effect2_bus = AudioServer.get_bus_index("effect2")
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	play_button = get_node("CenterContainer/Panel/HBoxContainer/StartButton")
@@ -213,6 +219,8 @@ func addNewUser():
 
 func _on_ConnectWallet_pressed():
 	# Get the `window.ProtonWebSDK` JavaScript object.
+	
+	# Create a javscript array of size 1
 	var endpoints = JavaScript.create_object("Array", 1)
 	endpoints[0] = "https://proton.greymass.com"
 	
@@ -287,3 +295,17 @@ func _on_RedeemButton_pressed():
 
 func _on_AcceptDialog_ready():
 	pass # Replace with function body.
+
+
+func _on_HSlider_value_changed(value):
+	AudioServer.set_bus_volume_db(master_bus, value)
+	AudioServer.set_bus_volume_db(effect_bus, value)
+	AudioServer.set_bus_volume_db(effect2_bus, value)
+	if value == -30:
+		AudioServer.set_bus_mute(master_bus, true)
+		AudioServer.set_bus_mute(effect_bus, true)
+		AudioServer.set_bus_mute(effect2_bus, true)
+	else:
+		AudioServer.set_bus_mute(master_bus, false)
+		AudioServer.set_bus_mute(effect_bus, false)
+		AudioServer.set_bus_mute(effect2_bus, false)

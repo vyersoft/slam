@@ -1,0 +1,22 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://Assets/Slammers/1611.png" type="Texture" id=1]
+[ext_resource path="res://Objects/Player/playerSlammer.gd" type="Script" id=2]
+[ext_resource path="res://Objects/Slammer/Avatar.tscn" type="PackedScene" id=3]
+
+[node name="playerSlammer" type="Node2D"]
+script = ExtResource( 2 )
+
+[node name="SlammerAvatar" parent="." instance=ExtResource( 3 )]
+scale = Vector2( 0.2, 0.2 )
+
+[node name="slammerSprite" type="Sprite" parent="."]
+visible = false
+texture = ExtResource( 1 )
+centered = false
+
+[node name="Forward" type="Tween" parent="."]
+
+[node name="Backward" type="Tween" parent="."]
+
+[connection signal="tween_completed" from="Forward" to="." method="_on_Forward_tween_completed"]

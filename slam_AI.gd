@@ -200,10 +200,12 @@ func use_finisher():
 		game_manager.move_counter += 1
 		game_manager.move_list[game_manager.move_counter] = {"Finisher":"Hit","doer":"AI", "stance":"Attack", "round_number":game_manager.round_n}
 		print("FINISH HIM!!!")
+		game_manager.counter_finisher()
 		game_board.get_node('Opponent/MomentumBar').value = 0
-#		game_board.get_node('Opponent/finisher_button').disabled = true
 		game_manager.update_power("Opponent", 25)
-	
+
+
+
 func full_counter():
 	game_board.get_node('Sound/finisher').play()
 	if check_finisher() == true:

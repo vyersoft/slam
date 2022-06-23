@@ -1,0 +1,142 @@
+[gd_scene load_steps=11 format=2]
+
+[ext_resource path="res://Objects/Field/Playspace.gd" type="Script" id=1]
+[ext_resource path="res://Assets/Images/ssf_bg.png" type="Texture" id=2]
+[ext_resource path="res://Objects/Field/ParallaxBackground.gd" type="Script" id=3]
+[ext_resource path="res://Objects/Field/CapField.tscn" type="PackedScene" id=4]
+[ext_resource path="res://Objects/Player/playerSlammer.tscn" type="PackedScene" id=5]
+[ext_resource path="res://UI/Bar.tscn" type="PackedScene" id=6]
+[ext_resource path="res://UI/Momentum.tscn" type="PackedScene" id=7]
+[ext_resource path="res://Assets/Images/FinisherButtonPressed.png" type="Texture" id=8]
+[ext_resource path="res://Objects/Enemy/enemySlammer.tscn" type="PackedScene" id=9]
+[ext_resource path="res://Assets/StreetBG.png" type="Texture" id=10]
+
+[node name="Playspace" type="Node2D"]
+script = ExtResource( 1 )
+
+[node name="ParallaxBackground" type="ParallaxBackground" parent="."]
+script = ExtResource( 3 )
+
+[node name="ParallaxLayer" type="ParallaxLayer" parent="ParallaxBackground"]
+motion_mirroring = Vector2( 1000, 0 )
+
+[node name="Sprite" type="Sprite" parent="ParallaxBackground/ParallaxLayer"]
+texture = ExtResource( 2 )
+centered = false
+
+[node name="Street Background" type="TextureRect" parent="."]
+margin_left = -3.0
+margin_top = -482.0
+margin_right = 716.0
+margin_bottom = 1074.0
+texture = ExtResource( 10 )
+expand = true
+
+[node name="PlayerHand" type="ColorRect" parent="."]
+visible = false
+margin_left = 59.0
+margin_top = 839.0
+margin_right = 659.0
+margin_bottom = 1064.0
+
+[node name="PlayingField" type="ColorRect" parent="."]
+margin_left = 61.0
+margin_top = 118.0
+margin_right = 661.0
+margin_bottom = 718.0
+color = Color( 0.427451, 0.478431, 0.639216, 0.662745 )
+
+[node name="CapField" parent="PlayingField" instance=ExtResource( 4 )]
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = -250.0
+margin_top = -151.0
+margin_right = 250.0
+margin_bottom = -11.0
+
+[node name="OpponentField" type="ColorRect" parent="PlayingField"]
+visible = false
+margin_left = 52.0
+margin_top = 14.0
+margin_right = 552.0
+margin_bottom = 154.0
+color = Color( 1, 0.0156863, 0.0156863, 1 )
+
+[node name="Slammer" type="ColorRect" parent="PlayingField"]
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = -50.0
+margin_top = -264.0
+margin_right = 50.0
+margin_bottom = -164.0
+
+[node name="playerSlammer" parent="PlayingField/Slammer" instance=ExtResource( 5 )]
+visible = false
+
+[node name="OpponentSlammer" type="ColorRect" parent="PlayingField"]
+margin_left = 201.0
+margin_top = -106.0
+margin_right = 301.0
+margin_bottom = -6.0
+color = Color( 1, 1, 1, 0 )
+
+[node name="Enemy" parent="PlayingField/OpponentSlammer" instance=ExtResource( 9 )]
+visible = false
+margin_bottom = 201.0
+
+[node name="PlayerStatBar" type="ColorRect" parent="."]
+margin_left = 60.0
+margin_top = 726.0
+margin_right = 660.0
+margin_bottom = 826.0
+color = Color( 0.168627, 0.219608, 1, 0 )
+
+[node name="PlayerMomentum" parent="PlayerStatBar" instance=ExtResource( 7 )]
+anchor_top = 1.0
+anchor_bottom = 1.0
+margin_top = -23.0
+margin_bottom = 17.0
+
+[node name="PlayerHealth" parent="PlayerStatBar" instance=ExtResource( 6 )]
+anchor_top = 1.0
+anchor_bottom = 1.0
+margin_top = -78.0
+margin_bottom = -25.0
+
+[node name="OpponentStatbar" type="ColorRect" parent="."]
+visible = false
+margin_left = 60.0
+margin_top = 8.0
+margin_right = 660.0
+margin_bottom = 108.0
+color = Color( 1, 0.0156863, 0.0156863, 1 )
+
+[node name="Health2" type="ColorRect" parent="OpponentStatbar"]
+margin_left = 8.0
+margin_top = 56.0
+margin_right = 508.0
+margin_bottom = 86.0
+color = Color( 0.00392157, 0.580392, 0.133333, 1 )
+
+[node name="Momentum2" type="ColorRect" parent="OpponentStatbar"]
+margin_left = 10.0
+margin_top = 10.0
+margin_right = 310.0
+margin_bottom = 40.0
+color = Color( 0.403922, 0.192157, 0.545098, 1 )
+
+[node name="Caps" type="Node" parent="."]
+
+[node name="AttackButton" type="TextureButton" parent="."]
+visible = false
+margin_left = 174.0
+margin_top = 394.0
+margin_right = 574.0
+margin_bottom = 496.0
+texture_normal = ExtResource( 8 )
+
+[connection signal="pressed" from="AttackButton" to="." method="_on_AttackButton_pressed"]

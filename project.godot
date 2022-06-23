@@ -9,6 +9,11 @@
 config_version=4
 
 _global_script_classes=[ {
+"base": "Node2D",
+"class": "Avatar",
+"language": "GDScript",
+"path": "res://Objects/Slammer/Avatar.gd"
+}, {
 "base": "TextureButton",
 "class": "Cap",
 "language": "GDScript",
@@ -20,6 +25,7 @@ _global_script_classes=[ {
 "path": "res://PlayedCap.gd"
 } ]
 _global_script_class_icons={
+"Avatar": "",
 "Cap": "",
 "PlayedCap": ""
 }
@@ -27,21 +33,27 @@ _global_script_class_icons={
 [application]
 
 config/name="Slam Street Fights"
-run/main_scene="res://GameBoard.tscn"
+run/main_scene="res://Objects/Field/Playspace.tscn"
 boot_splash/image="res://Assets/Images/Slamcahin Logo-export.png"
 config/icon="res://icon.png"
 
-[autoload]
-
-game_manager="*res://game_manager.gd"
-slam_AI="*res://slam_AI.gd"
-
 [display]
 
-window/size/width=1280
-window/size/height=720
+window/size/width=720
+window/size/height=1080
+window/size/always_on_top=true
+window/dpi/allow_hidpi=true
+window/handheld/orientation="portrait"
 window/stretch/mode="2d"
-window/stretch/aspect="keep"
+window/stretch/aspect="expand"
+
+[input]
+
+leftclick={
+"deadzone": 0.5,
+"events": [ Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"button_mask":0,"position":Vector2( 0, 0 ),"global_position":Vector2( 0, 0 ),"factor":1.0,"button_index":1,"pressed":false,"doubleclick":false,"script":null)
+ ]
+}
 
 [physics]
 
